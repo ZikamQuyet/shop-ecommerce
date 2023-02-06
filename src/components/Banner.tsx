@@ -1,11 +1,12 @@
 import React from 'react';
 import { Autoplay, Navigation } from 'swiper';
-import { Box, Link, useMediaQuery } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 import { IDataBanner } from '../constants/dataBanner';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { Link } from 'react-router-dom';
 
 
 
@@ -31,7 +32,7 @@ const Banner: React.FC<IBanner> = ({ data }) => {
         >
           {data.map((item) => (
             <SwiperSlide key={item.id}>
-              <Link href={item.href}>
+              <Link to={item.href}>
                 <img src={item.img} alt='banner' />
               </Link>
             </SwiperSlide>

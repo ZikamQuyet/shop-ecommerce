@@ -1,12 +1,13 @@
-
 import { List, ListItem, Stack, Button, Box, Typography, Divider } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import CloseIcon from '@mui/icons-material/Close'
 import { Link, useNavigate } from 'react-router-dom'
 import Count from '../../components/Count'
+import { useTranslation } from 'react-i18next'
 
 const CartMini = () => {
+  const { t } = useTranslation(['defaultLayout'])
   const navigate = useNavigate()
   return (
     <Box p={1}>
@@ -121,7 +122,7 @@ const CartMini = () => {
         <Divider />
       </List>
       <Stack direction={'row'} justifyContent='space-between' margin={'1rem 0'}>
-        <Typography>Tổng cộng:</Typography>
+        <Typography>{t('total')}</Typography>
         <Typography color={'secondary'}>199999 vnđ</Typography>
       </Stack>
       <Stack direction={'row'} gap={1} justifyContent='space-between'>
@@ -131,7 +132,7 @@ const CartMini = () => {
             navigate('/payment')
           }}
         >
-          Thanh toán
+          {t('payment')}
         </Button>
         <Button
           variant='contained'
@@ -139,7 +140,7 @@ const CartMini = () => {
             navigate('/cart')
           }}
         >
-          Giỏ hàng
+          {t('cart')}
         </Button>
       </Stack>
     </Box>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import {
@@ -6,57 +6,53 @@ import {
   Button,
   Container,
   FormControl,
-  FormControlLabel,
   FormHelperText,
-  FormLabel,
   Grid,
   IconButton,
   Input,
   InputAdornment,
   InputLabel,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
   Typography,
   useMediaQuery
 } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import { toast } from 'react-toastify'
-
-const schema = yup
-  .object()
-  .shape({
-    name: yup.string().required('Không bỏ trống họ và tên'),
-    gender: yup.string().required('Không bỏ trống giới tính'),
-    email: yup.string().email('Sai định dạng email').required('Không bỏ trống email'),
-
-    username: yup.string().required('Không bỏ trống tên đăng nhập'),
-    password: yup
-      .string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        'Phải chứa 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt'
-      )
-      .required('Không bỏ trống mật khẩu'),
-    password1: yup
-      .string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        'Phải chứa 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt'
-      )
-      .required('Không bỏ trống mật khẩu')
-  })
-  .required()
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { register } from '../redux/slice/authSlice'
+import { useTranslation } from 'react-i18next'
 
 const Register: React.FC = () => {
   const matches900 = useMediaQuery('(min-width:900px)')
   const matches600 = useMediaQuery('(min-width:600px)')
+
+  const navigate = useNavigate()
+  const { t } = useTranslation('auth')
+
+  const schema = useMemo(
+    () =>
+      yup
+        .object()
+        .shape({
+          name: yup.string().required(t('validation.name is required')),
+          email: yup.string().email(t('validation.wrong email format')).required(t('validation.email is required')),
+          password: yup
+            .string()
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+              t('validation.wrong password format')
+            ),
+          passwordConfirmation: yup.string().oneOf([yup.ref('password'), null], t('validation.passwords must match'))
+        })
+        .required(),
+    []
+  )
 
   const [showPassword1, setShowPassword1] = React.useState(false)
 
@@ -88,15 +84,23 @@ const Register: React.FC = () => {
     }
   }, [errors])
 
+  const dispatch = useAppDispatch()
+  const auth = useAppSelector((state) => state.auth)
+
   const handleRegister = (data: any) => {
-    if (data) {
-      return data
-    } else {
-      toast.error('error user or password', {
-        pauseOnHover: false
-      })
-    }
+    const { name, email, password } = data
+    dispatch(register({ name, email, password }))
   }
+
+  useEffect(() => {
+    if (auth.tokenRegister) {
+      toast.success(t('register.register success'))
+      navigate('/login')
+    }
+  }, [auth, navigate])
+  useEffect(() => {
+    document.title = t('register.register')
+  }, [])
 
   return (
     <>
@@ -107,7 +111,7 @@ const Register: React.FC = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant={matches600 ? 'h2' : 'h3'} fontWeight={400} textAlign='center' mb={5}>
-              Đăng ký
+              {t('register.register')}
             </Typography>
             <Stack component={'form'} alignItems='center' gap={3} onSubmit={handleSubmit(handleRegister)}>
               <Controller
@@ -116,7 +120,7 @@ const Register: React.FC = () => {
                     <TextField
                       {...field}
                       error={!!formState.errors?.name}
-                      label='Họ tên'
+                      label={t('register.name')}
                       id='name'
                       variant='standard'
                       sx={{ width: '80%' }}
@@ -130,28 +134,10 @@ const Register: React.FC = () => {
 
               <Controller
                 render={({ field, formState }) => (
-                  <FormControl sx={{ width: '80%' }}>
-                    <FormLabel error={!!formState.errors?.gender} id='demo-radio-buttons-group-label'>
-                      Giới tính
-                    </FormLabel>
-                    <RadioGroup {...field} sx={{ flexDirection: 'row' }}>
-                      <FormControlLabel value='male' control={<Radio />} label='Nam' />
-                      <FormControlLabel value='female' control={<Radio />} label='Nữ' />
-                      <FormControlLabel value='other' control={<Radio />} label='Khác' />
-                    </RadioGroup>
-                  </FormControl>
-                )}
-                name='gender'
-                control={control}
-                defaultValue='male'
-              />
-
-              <Controller
-                render={({ field, formState }) => (
                   <TextField
                     {...field}
                     error={!!formState.errors?.email}
-                    label='E-mail:'
+                    label={t('login.email')}
                     type='email'
                     variant='standard'
                     sx={{ width: '80%' }}
@@ -164,28 +150,13 @@ const Register: React.FC = () => {
 
               <Controller
                 render={({ field, formState }) => (
-                  <TextField
-                    {...field}
-                    id='username'
-                    error={!!formState.errors?.username}
-                    label='Tên đăng nhập'
-                    variant='standard'
-                    sx={{ width: '80%' }}
-                  />
-                )}
-                name='username'
-                control={control}
-                defaultValue=''
-              />
-
-              <Controller
-                render={({ field, formState }) => (
                   <FormControl sx={{ width: '80%' }} variant='standard'>
                     <InputLabel error={!!formState.errors.password} htmlFor='password'>
-                      Mật khẩu
+                      {t('login.password')}
                     </InputLabel>
                     <Input
                       {...field}
+                      autoComplete={'on'}
                       error={!!formState.errors.password}
                       id='password'
                       type={showPassword1 ? 'text' : 'password'}
@@ -202,7 +173,7 @@ const Register: React.FC = () => {
                       }
                     />
                     <FormHelperText sx={{ bgcolor: '#ccc', padding: '0.5rem', borderRadius: '0.5rem' }}>
-                      Lưu ý: Mật khẩu phải có tối thiểu 8 ký tự bao gồm chữ, số và các ký tự đặc biệt
+                      {t('register.note password')}
                     </FormHelperText>
                   </FormControl>
                 )}
@@ -214,13 +185,14 @@ const Register: React.FC = () => {
               <Controller
                 render={({ field, formState }) => (
                   <FormControl sx={{ width: '80%' }} variant='standard'>
-                    <InputLabel error={!!formState.errors.password} htmlFor='password1'>
-                      Xác nhận mật khẩu
+                    <InputLabel error={!!formState.errors.passwordConfirmation} htmlFor='password1'>
+                      {t('register.confirm password')}
                     </InputLabel>
                     <Input
-                      error={!!formState.errors.password}
+                      autoComplete={'on'}
+                      error={!!formState.errors.passwordConfirmation}
                       {...field}
-                      id='password1'
+                      id='passwordConfirmation'
                       type={showPassword2 ? 'text' : 'password'}
                       endAdornment={
                         <InputAdornment position='end'>
@@ -236,16 +208,17 @@ const Register: React.FC = () => {
                     />
                   </FormControl>
                 )}
-                name='password1'
+                name='passwordConfirmation'
                 control={control}
                 defaultValue=''
               />
 
               <Button variant='contained' color='primary' size='large' type='submit'>
-                Đăng nhập
+                {t('register.register')}
               </Button>
               <Box>
-                Bạn Đã Có Tài Khoản? <Link to={'/login'}> Đăng nhập ngay</Link>
+                {t('register.do you already have an account')}
+                <Link to={'/login'}> {t('register.login now')}</Link>
               </Box>
             </Stack>
           </Grid>

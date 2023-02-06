@@ -8,22 +8,13 @@ import React from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import {
-  Avatar,
-  Badge,
-  Box,
-  Collapse,
-  Grid,
-  List,
-  ListItem,
-  Modal,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Avatar, Badge, Box, Collapse, Grid, List, ListItem, Modal, Stack, TextField, Typography } from '@mui/material'
+import { Link, useNavigate } from 'react-router-dom'
 import useToggle from '../../hooks/useToggle'
 import CartMini from './CartMini'
+import { useAppSelector } from '../../redux/hooks'
+import { useTranslation } from 'react-i18next'
+import Divider from '@mui/material/Divider'
 
 const styleModalSearch = {
   position: 'absolute' as 'absolute',
@@ -43,10 +34,15 @@ const Header: React.FC = () => {
   const matches900 = useMediaQuery('(min-width:900px)')
   const matches600 = useMediaQuery('(min-width:600px)')
 
+  const { t } = useTranslation(['defaultLayout', 'auth'])
+  const navigate = useNavigate()
+
   const [openModalSearch, handleToggleModalSearch] = useToggle()
   const [openMenuMobile, handleToggleMenuMobile] = useToggle()
   const [openUser, handleToggleUser] = useToggle()
   const [openCart, handleToggleCart] = useToggle()
+
+  const auth = useAppSelector((state) => state.auth)
 
   return (
     <Box position='fixed' top={0} left={0} right={0} bgcolor='#fff' zIndex={999}>
@@ -58,11 +54,11 @@ const Header: React.FC = () => {
               <>
                 <Stack direction='row' alignItems='center' gap={1}>
                   <LocationOnIcon />
-                  <span>Địa chỉ: Việt Nam</span>
+                  <span>{t('address')}</span>
                 </Stack>
                 <Stack direction='row' alignItems='center' gap={1}>
                   <LocalPhoneIcon />
-                  <span>SĐT: 01234567890</span>
+                  <span>{t('phone')}</span>
                 </Stack>
               </>
             ) : (
@@ -96,12 +92,7 @@ const Header: React.FC = () => {
               <SearchIcon />
             </ButtonCustom>
 
-            <Modal
-              open={openModalSearch}
-              onClose={handleToggleModalSearch}
-              // aria-labelledby='modal-modal-title'
-              // aria-describedby='modal-modal-description'
-            >
+            <Modal open={openModalSearch} onClose={handleToggleModalSearch}>
               <Box sx={styleModalSearch} display='flex' justifyContent='center' gap={1}>
                 <form action=''>
                   <Stack direction='row' alignItems='center' gap={1}>
@@ -134,36 +125,49 @@ const Header: React.FC = () => {
                 }}
               >
                 <List component='div' disablePadding>
-                  <ListItem>
-                    <Link
-                      to='/user'
-                      // underline='none'
-                      // width={'100%'}
-                      // display='flex'
-                      // justifyContent={'space-between'}
-                      // alignItems='center'
-                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                    >
-                      <Avatar></Avatar>
-                      User1
-                    </Link>
-                  </ListItem>
-                  <ListItem>
-                    <Link
-                      to='/login'
-                      // underline='none' width={'100%'}
-                    >
-                      <Typography>Đăng nhập</Typography>
-                    </Link>
-                  </ListItem>
-                  <ListItem>
-                    <Link
-                      to='/login'
-                      // underline='none' width={'100%'}
-                    >
-                      <Typography>Đăng Xuất</Typography>
-                    </Link>
-                  </ListItem>
+                  {/* login/register */}
+                  {auth.tokenLogin ? (
+                    <>
+                      <ListItem>
+                        <Link
+                          to='/user'
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <Avatar></Avatar>
+                          User1
+                        </Link>
+                      </ListItem>
+                      <Divider />
+                      <ListItem
+                        sx={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          localStorage.removeItem('persist:root')
+                          window.location.reload()
+                        }}
+                      >
+                        <Typography>{t('logout')}</Typography>
+                      </ListItem>
+                    </>
+                  ) : (
+                    <>
+                      <ListItem>
+                        <Typography fontStyle={'italic'} fontWeight={300} fontSize={12}>
+                          {t('not account')}
+                        </Typography>
+                      </ListItem>
+                      <Divider />
+                      <ListItem>
+                        <Link to='/login'>
+                          <Typography>{t('auth:login.login')}</Typography>
+                        </Link>
+                      </ListItem>
+                    </>
+                  )}
                 </List>
               </Collapse>
             </Box>

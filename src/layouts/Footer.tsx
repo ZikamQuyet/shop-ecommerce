@@ -6,10 +6,13 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Box, Button, FormControl, Grid, List, ListItem, Stack, TextField, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 const Footer = () => {
+  const { t } = useTranslation(['defaultLayout', 'auth'])
+  const navigate = useNavigate()
   return (
     <>
       <Box p='1rem' borderTop={'1px solid #000'}>
@@ -22,70 +25,76 @@ const Footer = () => {
             </Box>
             <Stack direction='row' spacing={1}>
               <LocalShippingIcon />
-              <span>Ship COD toàn quốc</span>
+              <span>{t('ship')}</span>
             </Stack>
             <Stack direction='row' spacing={1}>
               <CardGiftcardIcon />
-              <span>FREESHIP đơn hàng từ 700.000đ </span>
+              <span>{t('discount')} </span>
             </Stack>
           </Grid>
           <Grid item xs={12} sm={6} lg={3} display='flex' flexDirection='column' gap={2}>
-            <Typography variant='h3' fontSize={18} fontWeight='bold' paddingBottom={2}>
-              LIÊN HỆ
+            <Typography
+              variant='h3'
+              fontSize={18}
+              fontWeight='bold'
+              paddingBottom={2}
+              sx={{ textTransform: 'uppercase' }}
+            >
+              {t('contact')}
             </Typography>
             <Stack direction='row' spacing={1}>
               <HomeIcon />
-              <Typography>CLOWNZ STORE</Typography>
+              <Typography>{t('clownz store')}</Typography>
             </Stack>
             <Stack direction='row' spacing={1}>
               <LocationOnIcon />
-              <Typography>45 Núi Trúc, Ba Đình, HN</Typography>
+              <Typography>{t('address 1')}</Typography>
             </Stack>
             <Stack direction='row' spacing={1}>
               <LocationOnIcon />
-              <Typography>19 Hồ Đắc Di, Đống Đa, HN</Typography>
+              <Typography>{t('address 2')}</Typography>
             </Stack>
             <Stack direction='row' spacing={1}>
               <EmailIcon />
-              <Typography>duong@clownz.vn</Typography>
+              <Typography>{t('address email')}</Typography>
             </Stack>
             <Stack direction='row' spacing={1}>
               <LocalPhoneIcon />
-              <Typography>058660 8660</Typography>
+              <Typography>{t('phone 1')}</Typography>
             </Stack>
           </Grid>
           <Grid item xs={12} sm={6} lg={3} display='flex' flexDirection='column' gap={2}>
             <Typography variant='h3' fontSize={18} fontWeight='bold' paddingBottom={2}>
-              CHÍNH SÁCH
+              {t('policy')}
             </Typography>
             <Stack direction='row' spacing={1}>
               <CircleIcon />
               <Link to='/'>
-                <Typography>CHÍNH SÁCH THÀNH VIÊN</Typography>
+                <Typography>{t('policy 1')}</Typography>
               </Link>
             </Stack>
             <Stack direction='row' spacing={1}>
               <CircleIcon />
               <Link to='/'>
-                <Typography>CHÍNH SÁCH ĐỔI TRẢ</Typography>
+                <Typography>{t('policy 2')}</Typography>
               </Link>
             </Stack>
             <Stack direction='row' spacing={1}>
               <CircleIcon />
               <Link to='/'>
-                <Typography>CHÍNH SÁCH VẬN CHUYỂN</Typography>
+                <Typography>{t('policy 3')}</Typography>
               </Link>
             </Stack>
           </Grid>
           <Grid item xs={12} sm={6} lg={3} display='flex' flexDirection='column' gap={2}>
             <Typography variant='h3' fontSize={18} fontWeight='bold' paddingBottom={2}>
-              ĐĂNG KÝ NHẬN TIN
+              {t('sign up for ')}
             </Typography>
-            <Typography>Nhận thông tin sản phẩm mới nhất, tin khuyến mãi và nhiều hơn nữa.</Typography>
+            <Typography> {t('note')}</Typography>
             <FormControl component={'form'} sx={{ flexDirection: 'row' }}>
-              <TextField id='register' label='Email của bạn' variant='outlined' />
+              <TextField id='register' label= {t("your email")}variant='outlined' />
               <Button variant='contained' color='success' sx={{ fontSize: '14px' }} size='small'>
-                Đăng ký
+                {t('auth:register.register')}
               </Button>
             </FormControl>
             <List sx={{ display: 'flex', gap: '1rem' }}>
