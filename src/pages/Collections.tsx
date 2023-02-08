@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import useToggle from '../hooks/useToggle'
-import Card from '../components/CardProduct'
+import Card from '../components/Card'
 
 const Collections = () => {
   const [openCategory, handleToggleCategory] = useToggle()

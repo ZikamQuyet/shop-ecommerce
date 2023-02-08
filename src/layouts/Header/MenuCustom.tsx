@@ -8,7 +8,8 @@ import ExpandMore from '@mui/icons-material/ExpandMore'
 import ButtonCustom from '../../components/ButtonCustom'
 import useToggle from '../../hooks/useToggle'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface IMenuCustom {
   isMobile?: boolean
@@ -18,6 +19,9 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
   const matches1200 = useMediaQuery('(min-width:1200px)')
   const matches900 = useMediaQuery('(min-width:900px)')
   const matches600 = useMediaQuery('(min-width:600px)')
+
+  const { t } = useTranslation(['defaultLayout','auth'])
+  const navigate = useNavigate()
 
   const [open, handleToggle] = useToggle()
   return (
@@ -40,11 +44,8 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
           disablePadding
         >
           <ListItem>
-            <Link
-              to='/'
-              style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}
-            >
-              <Typography>Trang chủ</Typography>
+            <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
+              <Typography>{t('home')}</Typography>
             </Link>
           </ListItem>
           <ListItem
@@ -54,7 +55,7 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
           >
             <Stack width={'100%'} direction='row' justifyContent={'space-between'}>
               <Link to='/collections' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-                <Typography>Sản phẩm</Typography>
+                <Typography>{t('product')}</Typography>
               </Link>
               <ButtonCustom bgColor='none' border='none' onClick={handleToggle} padding={'0'}>
                 {open ? <ExpandLess /> : <ExpandMore />}
@@ -82,17 +83,17 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
               <List component='div' disablePadding>
                 <ListItem>
                   <Link to='/collections' style={{ width: '100%' }}>
-                    <Typography>Top</Typography>
+                    <Typography>{t('top')}</Typography>
                   </Link>
                 </ListItem>
                 <ListItem>
                   <Link to='/collections' style={{ width: '100%' }}>
-                    <Typography>Bottom</Typography>
+                    <Typography>{t('bottom')}</Typography>
                   </Link>
                 </ListItem>
                 <ListItem>
                   <Link to='/collections' style={{ width: '100%' }}>
-                    <Typography>ACCESSORY</Typography>
+                    <Typography>{t('accessory')}</Typography>
                   </Link>
                 </ListItem>
               </List>
@@ -101,17 +102,17 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
 
           <ListItem>
             <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-              <Typography>Blog</Typography>
+              <Typography>{t('blog')}</Typography>
             </Link>
           </ListItem>
           <ListItem>
             <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-              <Typography>Về chúng tôi</Typography>
+              <Typography>{t('about us')}</Typography>
             </Link>
           </ListItem>
           <ListItem>
             <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-              <Typography>Liên hệ</Typography>
+              <Typography>{t('contact')}</Typography>
             </Link>
           </ListItem>
         </List>

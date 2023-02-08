@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import {
@@ -14,35 +14,50 @@ import {
   TextField,
   Typography,
   useMediaQuery,
-  Box,
-  FormControlLabel,
-  Checkbox
+  Box
 } from '@mui/material'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
+import { login } from '../redux/slice/authSlice'
 
-const schema = yup
-  .object()
-  .shape({
-    username: yup.string().required('Không bỏ trống'),
-    password: yup
-      .string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-        'Phải chứa 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt'
-      )
-      .required('Không bỏ trống')
-  })
-  .required()
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
 
 const Login: React.FC = () => {
   const matches900 = useMediaQuery('(min-width:900px)')
   const matches600 = useMediaQuery('(min-width:600px)')
+
+  const navigate = useNavigate()
+
+  const dispatch = useAppDispatch()
+  const auth = useAppSelector((state) => state.auth)
+
+
+
+  const { t } = useTranslation('auth')
+
+  const schema = useMemo(
+    () =>
+      yup
+        .object()
+        .shape({
+          email: yup.string().required(t('validation.email is required')).email(t('validation.wrong email format')),
+          password: yup
+            .string()
+            // .matches(
+            //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+            //   t('validation.wrong password format')
+            // )
+            .required(t('validation.password is required'))
+        })
+        .required(),
+    []
+  )
 
   const [showPassword, setShowPassword] = useState(false)
 
@@ -71,38 +86,49 @@ const Login: React.FC = () => {
   }, [errors])
 
   const handleSignIn = (data: any) => {
-    if (data.username === 'aaa') {
-      return data;
-    } else {
-      toast.error('error user or password', {
-        pauseOnHover: false
-      })
-    }
+    dispatch(login(data))
   }
+  useEffect(() => {
+    if (auth.tokenLogin) {
+      toast.success(t('login.login success'))
+      navigate('/')
+    }
+  }, [auth, navigate])
+
+  useEffect(() => {
+    document.title = t('login.login')
+  }, [])
+
   return (
     <>
       <Container maxWidth={'xl'}>
-        <Grid container alignItems={'center'} m='8rem 0'>
+        <Grid container alignItems={'center'} m={matches900 ? '10rem 0 4rem' : '6rem 0 2rem'}>
           <Grid item md={6} display={matches900 ? 'block' : 'none'}>
             <img src='images/login-register/login.jpeg' alt='login' style={{ width: '100%', objectFit: 'cover' }} />
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant={matches600 ? 'h2' : 'h3'} fontWeight={400} textAlign='center' mb={5}>
-              Đăng nhập
+            <Typography
+              variant={matches900 ? 'h2' : matches600 ? 'h3' : 'h4'}
+              fontWeight={400}
+              textAlign='center'
+              mb={5}
+            >
+              {t('login.login')}
             </Typography>
             <Stack component={'form'} alignItems='center' gap={3} onSubmit={handleSubmit(handleSignIn)}>
               <Controller
                 render={({ field, formState }) => (
                   <TextField
                     {...field}
-                    id='username'
-                    error={!!formState.errors?.username}
-                    label='Tên đăng nhập'
+                    id='email'
+                    type={'email'}
+                    error={!!formState.errors?.email}
+                    label={t('login.email')}
                     variant='standard'
                     sx={{ width: '80%' }}
                   />
                 )}
-                name='username'
+                name='email'
                 control={control}
                 defaultValue=''
               />
@@ -110,10 +136,11 @@ const Login: React.FC = () => {
                 render={({ field, formState }) => (
                   <FormControl sx={{ width: '80%' }} variant='standard'>
                     <InputLabel error={!!formState.errors.password} htmlFor='password'>
-                      Mật khẩu
+                      {t('login.password')}
                     </InputLabel>
                     <Input
                       {...field}
+                      autoComplete={'on'}
                       id='password'
                       type={showPassword ? 'text' : 'password'}
                       error={!!formState.errors.password}
@@ -136,12 +163,11 @@ const Login: React.FC = () => {
                 defaultValue=''
               />
 
-              <FormControlLabel control={<Checkbox />} label='Nhớ mật khẩu' sx={{ width: '80%' }} />
               <Button variant='contained' color='primary' size='large' type='submit' disabled={isSubmitting}>
-                Đăng nhập
+                {t('login.login')}
               </Button>
               <Box>
-                Bạn chưa có tài khoản? <Link to={'/register'}>Tạo tài khoản</Link>
+                {t('login.not account')} <Link to={'/register'}>{t('login.create account')}</Link>
               </Box>
             </Stack>
           </Grid>

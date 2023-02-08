@@ -3,10 +3,9 @@ import { Box, Typography, Stack, Button, Collapse, useMediaQuery } from '@mui/ma
 import { Link } from 'react-router-dom'
 import useToggle from '../hooks/useToggle'
 
-const CardProduct = () => {
+const Card = () => {
   const [open, handleToggle] = useToggle()
   const matches900 = useMediaQuery('(min-width:900px)')
-  const matches576 = useMediaQuery('(min-width:576px)')
   return (
     <>
       <Box position={'relative'} onMouseEnter={handleToggle} onMouseLeave={handleToggle}>
@@ -42,12 +41,7 @@ const CardProduct = () => {
             </Stack>
           </Collapse>
         ) : (
-          <Stack
-            direction={matches576 ? 'row' : 'column'}
-            justifyContent='space-between'
-            marginTop={1}
-            gap={matches576 ? 0 : 1}
-          >
+          <Stack direction={'row'} justifyContent='space-between' marginTop={1}>
             <Button variant='outlined'>Thêm giỏ hàng</Button>
             <Button variant='contained'>Mua ngay</Button>
           </Stack>
@@ -57,4 +51,4 @@ const CardProduct = () => {
   )
 }
 
-export default CardProduct
+export default Card
