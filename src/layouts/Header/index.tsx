@@ -24,6 +24,7 @@ import {
 import { Link } from 'react-router-dom'
 import useToggle from '../../hooks/useToggle'
 import CartMini from './CartMini'
+import { images } from '../../assets'
 
 const styleModalSearch = {
   position: 'absolute' as 'absolute',
@@ -88,7 +89,7 @@ const Header: React.FC = () => {
           </Grid>
           <Grid item xs={4} xl={6} display='flex' justifyContent='center'>
             <Link to='/' style={{ display: 'flex', alignItems: 'center' }}>
-              <img src='images/logo.png' alt='logo' />
+              <img src={images.logo} alt='logo' />
             </Link>
           </Grid>
           <Grid item xs={4} xl={3} display='flex' justifyContent='right' alignItems='center' gap={matches600 ? 3 : 1}>

@@ -28,6 +28,8 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import { toast } from 'react-toastify'
+import { FIRST } from '../constants/constants'
+import { images } from '../assets'
 
 const schema = yup
   .object()
@@ -82,7 +84,7 @@ const Register: React.FC = () => {
   useEffect(() => {
     const arrErr: any = Object.values(errors)
     if (arrErr.length > 0) {
-      toast.error(arrErr[0]?.message, {
+      toast.error(arrErr[FIRST]?.message, {
         pauseOnHover: false
       })
     }
@@ -103,7 +105,7 @@ const Register: React.FC = () => {
       <Container maxWidth={'xl'}>
         <Grid container alignItems={'center'} m='8rem 0'>
           <Grid item md={6} display={matches900 ? 'block' : 'none'}>
-            <img src='images/login-register/register.jpeg' alt='login' style={{ width: '100%', objectFit: 'cover' }} />
+            <img src={images.register} alt='login' style={{ width: '100%', objectFit: 'cover' }} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant={matches600 ? 'h2' : 'h3'} fontWeight={400} textAlign='center' mb={5}>

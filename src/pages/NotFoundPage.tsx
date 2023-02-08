@@ -1,5 +1,6 @@
 import { Box, Button, Container, Stack, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { images } from '../assets'
 
 const NotFoundPage = () => {
   const navigate = useNavigate()
@@ -10,7 +11,7 @@ const NotFoundPage = () => {
     <Container maxWidth={'xl'}>
       <Stack justifyContent={'center'} alignItems='center' gap={3}>
         <Box maxWidth={'500px'}>
-          <img src='images/bn_404.png' alt='image-404' />
+          <img src={images.bg404} alt='image-404' />
         </Box>
         <Stack textAlign={'center'} gap={1}>
           <Typography variant='h3'>Oops! Trang bạn tìm kiếm không tồn tại.</Typography>

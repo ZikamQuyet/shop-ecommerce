@@ -7,9 +7,16 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 import CardProduct from '../../components/CardProduct'
+import { getProducts } from '../../api/product'
+import { useQuery } from '@tanstack/react-query'
 
 const BannerListProduct = () => {
   const matches900 = useMediaQuery('(min-width:900px)')
+  const { data, isLoading } = useQuery({
+    queryKey: ['products', 1],
+    queryFn: () => getProducts(1)
+  })
+  console.log('data banner sp lien quan', data?.data.data)
   return (
     <>
       <Box>
@@ -19,34 +26,27 @@ const BannerListProduct = () => {
           </Typography>
         </Divider>
 
-        <Swiper
-          slidesPerView={matches900 ? 4 : 2}
-          spaceBetween={20}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false
-          }}
-          loop={true}
-          navigation={matches900 ? true : false}
-          modules={[Autoplay, Navigation]}
-          className='mySwiper'
-        >
-          <SwiperSlide>
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide>
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide>
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide>
-            <CardProduct />
-          </SwiperSlide>
-          <SwiperSlide>
-            <CardProduct />
-          </SwiperSlide>
-        </Swiper>
+        {data?.data.data && (
+          <Swiper
+            slidesPerView={matches900 ? 4 : 2}
+            spaceBetween={20}
+            autoplay={{
+              delay: 5000,
+              disableOnInteraction: false
+            }}
+            loop={true}
+            navigation={matches900 ? true : false}
+            modules={[Autoplay, Navigation]}
+            className='mySwiper'
+          >
+            {data?.data.data.map((product: any) => (
+              <SwiperSlide>
+                <CardProduct data={product} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+        {}
       </Box>
     </>
   )

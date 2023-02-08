@@ -1,3 +1,5 @@
+import { images } from '../assets'
+
 export interface IDataBanner {
   id: string
   img: string
@@ -7,17 +9,17 @@ export interface IDataBanner {
 export const dataMainBanner: IDataBanner[] = [
   {
     id: 'b1',
-    img: 'images/banner/slider_1.jpg',
+    img: images.slider1,
     href: '#'
   },
   {
     id: 'b2',
-    img: 'images/banner/slider_1.jpg',
+    img: images.slider1,
     href: '#'
   },
   {
     id: 'b3',
-    img: 'images/banner/slider_1.jpg',
+    img: images.slider1,
     href: '#'
   }
 ]
@@ -25,12 +27,12 @@ export const dataMainBanner: IDataBanner[] = [
 export const dataStoryBanner: IDataBanner[] = [
   {
     id: 'sb1',
-    img: 'images/banner/slider_story_1.jpg',
+    img: images.sliderStory1,
     href: '#'
   },
   {
     id: 'sb2',
-    img: 'images/banner/slider_story_2.jpg',
+    img: images.sliderStory2,
     href: '#'
   }
 ]

@@ -5,7 +5,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/thumbs'
 import { useMediaQuery, Box } from '@mui/material'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 const dataImagesProduct = [
   {
     id: 'p1',
@@ -28,10 +28,14 @@ const dataImagesProduct = [
     img: 'images/product/sp-1-5.jpg'
   }
 ]
-const BannerProduct = () => {
+interface IBannerProduct {
+  dataImages: any
+}
+const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
   const matches900 = useMediaQuery('(min-width:900px)')
   const [activeThumb, setActiveThumb] = React.useState<SwiperCore>()
-
+  console.log('dataImages', dataImages)
+  // return null
   return (
     <>
       <Swiper
@@ -43,10 +47,14 @@ const BannerProduct = () => {
         className='vehicle-image-slider'
         style={{ marginBottom: '0.5rem' }}
       >
-        {dataImagesProduct.map((item, index) => (
+        {dataImages.map((item: any, index: number) => (
           <SwiperSlide key={index}>
-            <Box sx={{ height: '700px' }}>
-              <img src={item.img} alt='lamborgini image' style={{ height: '100%' }} />
+            <Box sx={{ height: '600px' }}>
+              <img
+                src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}
+                alt='lamborgini image'
+                style={{ height: '100%' }}
+              />
             </Box>
           </SwiperSlide>
         ))}
@@ -59,10 +67,14 @@ const BannerProduct = () => {
         modules={[Navigation, Thumbs]}
         className='vehicle-image-slider-thumbs'
       >
-        {dataImagesProduct.map((item, index) => (
+        {dataImages.map((item: any, index: number) => (
           <SwiperSlide key={index} style={{ display: 'flex', flexDirection: 'column' }}>
             <Box className='thumbs-wrapper' sx={{ height: '150px' }}>
-              <img src={item.img} alt='lamborgini image' style={{ height: '100%' }} />
+              <img
+                src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}
+                alt='lamborgini image'
+                style={{ height: '100%' }}
+              />
             </Box>
           </SwiperSlide>
         ))}

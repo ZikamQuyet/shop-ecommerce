@@ -25,6 +25,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { toast } from 'react-toastify'
 
 import { useNavigate } from 'react-router-dom'
+import { FIRST } from '../constants/constants'
 
 const schema = yup
   .object()
@@ -54,7 +55,7 @@ const Payment = () => {
   useEffect(() => {
     const arrErr: any = Object.values(errors)
     if (arrErr.length > 0) {
-      toast.error(arrErr[0]?.message, {
+      toast.error(arrErr[FIRST]?.message, {
         pauseOnHover: false
       })
     }
