@@ -13,8 +13,9 @@ import { ICategories } from '../../types/product.type'
 
 interface IMenuCustom {
   isMobile?: boolean
+  toggleDrawer?: any
 }
-const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
+const MenuCustom: React.FC<IMenuCustom> = ({ isMobile, toggleDrawer }) => {
   const matches1536 = useMediaQuery('(min-width:1536px)')
   const matches1200 = useMediaQuery('(min-width:1200px)')
 
@@ -34,6 +35,7 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
         direction={'row'}
         justifyContent={`${isMobile ? 'unset' : 'center'}`}
         borderBottom={`${isMobile ? 'unset' : '1px solid #000'}`}
+        width={`${isMobile ? '12.5rem' : 'unset'}`}
       >
         <List
           sx={
@@ -41,14 +43,19 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
               ? {
                   display: 'flex',
                   justifyContent: 'center',
-                  width: `${matches1536 ? '45%' : matches1200 ? '60%' : '80%'}`
+                  width: `${matches1536 ? '50%' : matches1200 ? '60%' : '80%'}`
                 }
               : { width: '100%' }
           }
           disablePadding
         >
           <ListItem>
-            <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
+            <Link
+              to='/'
+              style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}
+              onClick={toggleDrawer}
+              onKeyDown={toggleDrawer}
+            >
               <Typography>{t('home')}</Typography>
             </Link>
           </ListItem>
@@ -59,7 +66,12 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
             <Stack width={'100%'} direction='row' justifyContent={'space-between'}>
-              <Link to='/collections' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
+              <Link
+                to='/collections'
+                style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}
+                onClick={toggleDrawer}
+                onKeyDown={toggleDrawer}
+              >
                 <Typography>{t('product')}</Typography>
               </Link>
               <ButtonCustom bgColor='none' border='none' onClick={open.handleToggle} padding={'0'}>
@@ -86,7 +98,7 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
               }
             >
               {!getDataCategories.isLoading && (
-                <List component='div' disablePadding>
+                <List component='div' disablePadding onClick={toggleDrawer} onKeyDown={toggleDrawer}>
                   {dataCategories.map((category: any) => (
                     <ListItem key={category.id}>
                       <Link to={`/collections/${category.id}`} style={{ width: '100%' }}>
@@ -100,17 +112,32 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
           </ListItem>
 
           <ListItem>
-            <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
+            <Link
+              to='/'
+              style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}
+              onClick={toggleDrawer}
+              onKeyDown={toggleDrawer}
+            >
               <Typography>{t('blog')}</Typography>
             </Link>
           </ListItem>
           <ListItem>
-            <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
+            <Link
+              to='/'
+              style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}
+              onClick={toggleDrawer}
+              onKeyDown={toggleDrawer}
+            >
               <Typography>{t('about us')}</Typography>
             </Link>
           </ListItem>
           <ListItem>
-            <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
+            <Link
+              to='/'
+              style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}
+              onClick={toggleDrawer}
+              onKeyDown={toggleDrawer}
+            >
               <Typography>{t('contact')}</Typography>
             </Link>
           </ListItem>

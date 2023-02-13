@@ -21,7 +21,6 @@ const CardProduct: React.FC<ICardProduct> = ({ dataProduct }) => {
 
   const [isLoadingImg, setIsLoadingImg] = useState(false)
 
-
   const matches680 = useMediaQuery('(min-width:680px)')
   const matches900 = useMediaQuery('(min-width:900px)')
   const matches1200 = useMediaQuery('(min-width:1200px)')
@@ -66,7 +65,7 @@ const CardProduct: React.FC<ICardProduct> = ({ dataProduct }) => {
       <Box position={'relative'} onMouseEnter={open.handleOpen} onMouseLeave={open.handleClose}>
         <Link to={`/product/${dataProduct.id}`}>
           <Box height={matches1200 ? 480 : matches680 ? 380 : 240}>
-            {!isLoadingImg && <Skeleton height={matches1200 ? 480 : matches680 ? 380 : 240} />}
+            {!isLoadingImg && <Skeleton sx={{ height: '100%', transform: 'unset' }} />}
             <img
               src={`${BASE_URL_IMAGE}${dataProduct.images[FIRST].product_img}`}
               alt='image-product'

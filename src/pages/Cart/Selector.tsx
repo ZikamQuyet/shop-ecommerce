@@ -49,7 +49,7 @@ const Selector: React.FC<ISelector> = ({ title, id, color, size, dataProduct }) 
           </Select>
         </FormControl>
       )}
-      {!dataProduct && <Skeleton width={'100%'} />}
+      {!dataProduct && <Skeleton sx={{ height: '100%', transform: 'unset' }} />}
     </>
   )
 }

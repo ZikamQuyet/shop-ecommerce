@@ -14,6 +14,10 @@ const OrderSuccess = () => {
   }
   useEffect(() => {
     document.title = 'Thành công'
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   }, [])
   return (
     <Container maxWidth={'xl'}>

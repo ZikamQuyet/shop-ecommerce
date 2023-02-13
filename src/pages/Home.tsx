@@ -16,17 +16,17 @@ const Home: React.FC = () => {
       <Banner dataBanner={dataMainBanner} />
       <Grid container spacing={5} p={'1rem'}>
         <Grid item xs={12} sm={6} md={4} textAlign={'center'}>
-          <Link to={'/collections'}>
+          <Link to={'/collections/2'}>
             <img src={images.categoryBanner1} alt='category-banner' />
           </Link>
         </Grid>
         <Grid item xs={12} sm={6} md={4} textAlign={'center'}>
-          <Link to={'/collections'}>
+          <Link to={'/collections/3'}>
             <img src={images.categoryBanner2} alt='category-banner' />
           </Link>
         </Grid>
         <Grid item xs={12} sm={12} md={4} textAlign={'center'}>
-          <Link to={'/collections'}>
+          <Link to={'/collections/4'}>
             <img src={images.categoryBanner3} alt='category-banner' />
           </Link>
         </Grid>

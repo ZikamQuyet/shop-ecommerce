@@ -1,6 +1,6 @@
-import * as yup from 'yup';
-import React, { useEffect, useMemo, useState } from 'react';
-import { addOrder } from '../api/order.api';
+import * as yup from 'yup'
+import React, { useEffect, useMemo, useState } from 'react'
+import { addOrder } from '../api/order.api'
 import {
   Badge,
   Box,
@@ -20,23 +20,23 @@ import {
   TextField,
   Typography,
   useMediaQuery
-  } from '@mui/material';
-import { BASE_URL_IMAGE, FIRST } from '../constants/constants';
-import { Controller, useForm } from 'react-hook-form';
-import { convertPrice } from '../utils/convertPrice';
-import { getListProductOrder } from '../utils/getListProductOrder';
-import { getTotal, getTotalPriceItem } from '../utils/getTotal';
-import { getUser } from '../api/user.api';
-import { ICart } from '../types/cart.type';
-import { IOder } from '../types/order.type';
-import { IUser } from '../types/user.type';
-import { removeCart } from '../redux/slice/cartSlice';
-import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { yupResolver } from '@hookform/resolvers/yup';
+} from '@mui/material'
+import { BASE_URL_IMAGE, FIRST } from '../constants/constants'
+import { Controller, useForm } from 'react-hook-form'
+import { convertPrice } from '../utils/convertPrice'
+import { getListProductOrder } from '../utils/getListProductOrder'
+import { getTotal, getTotalPriceItem } from '../utils/getTotal'
+import { getUser } from '../api/user.api'
+import { ICart } from '../types/cart.type'
+import { IOder } from '../types/order.type'
+import { IUser } from '../types/user.type'
+import { removeCart } from '../redux/slice/cartSlice'
+import { toast } from 'react-toastify'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 const Order: React.FC = () => {
   const matches900 = useMediaQuery('(min-width:900px)')
@@ -224,9 +224,9 @@ const Order: React.FC = () => {
               {dataCart.map((item: ICart) => (
                 <Box>
                   <ListItem sx={{ padding: '1rem 0', gap: '2rem' }} disablePadding alignItems='flex-start'>
-                    <Badge badgeContent={item.quantity} color='primary' sx={{ width: '100px', height: '100px' }}>
-                      {!isLoadingImg && <Skeleton width={'100%'} height='100%' />}
+                    <Badge badgeContent={item.quantity} color='primary' sx={{ width: '6.25rem', height: '6.25rem' }}>
                       <img src={`${BASE_URL_IMAGE}${item.img}`} alt='product' onLoad={() => setIsLoadingImg(true)} />
+                      {!isLoadingImg && <Skeleton sx={{ height: '100%', width: '100%', transform: 'unset' }} />}
                     </Badge>
                     <Box>
                       <Typography variant='h6'>{item.name}</Typography>
