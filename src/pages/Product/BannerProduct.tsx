@@ -1,41 +1,19 @@
-import { Swiper, SwiperSlide } from 'swiper/react'
+import React, { useState } from 'react'
 import SwiperCore, { Navigation, Thumbs } from 'swiper'
+import { Box, useMediaQuery, Skeleton } from '@mui/material'
+import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/thumbs'
-import { useMediaQuery, Box } from '@mui/material'
+import { IImage } from '../../types/product.type'
 
-import React, { useEffect } from 'react'
-const dataImagesProduct = [
-  {
-    id: 'p1',
-    img: 'images/product/sp-1-1.jpg'
-  },
-  {
-    id: 'p2',
-    img: 'images/product/sp-1-2.jpg'
-  },
-  {
-    id: 'p3',
-    img: 'images/product/sp-1-3.jpg'
-  },
-  {
-    id: 'p4',
-    img: 'images/product/sp-1-4.jpg'
-  },
-  {
-    id: 'p5',
-    img: 'images/product/sp-1-5.jpg'
-  }
-]
 interface IBannerProduct {
-  dataImages: any
+  dataImages: IImage[]
 }
 const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
   const matches900 = useMediaQuery('(min-width:900px)')
-  const [activeThumb, setActiveThumb] = React.useState<SwiperCore>()
-  console.log('dataImages', dataImages)
-  // return null
+  const [activeThumb, setActiveThumb] = useState<SwiperCore>()
+  const [isLoadingImg, setIsLoadingImg] = useState(false)
   return (
     <>
       <Swiper
@@ -47,13 +25,15 @@ const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
         className='vehicle-image-slider'
         style={{ marginBottom: '0.5rem' }}
       >
-        {dataImages.map((item: any, index: number) => (
-          <SwiperSlide key={index}>
-            <Box sx={{ height: '600px' }}>
+        {dataImages.map((item: IImage) => (
+          <SwiperSlide key={item.id}>
+            <Box sx={{ height: '37.5rem' }}>
+              {!isLoadingImg && <Skeleton height={'100%'} />}
               <img
                 src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}
-                alt='lamborgini image'
+                alt='product-image'
                 style={{ height: '100%' }}
+                onLoad={() => setIsLoadingImg(true)}
               />
             </Box>
           </SwiperSlide>
@@ -67,13 +47,15 @@ const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
         modules={[Navigation, Thumbs]}
         className='vehicle-image-slider-thumbs'
       >
-        {dataImages.map((item: any, index: number) => (
-          <SwiperSlide key={index} style={{ display: 'flex', flexDirection: 'column' }}>
-            <Box className='thumbs-wrapper' sx={{ height: '150px' }}>
+        {dataImages.map((item: IImage) => (
+          <SwiperSlide key={item.id} style={{ display: 'flex', flexDirection: 'column' }}>
+            <Box className='thumbs-wrapper' sx={{ height: '9.375rem' }}>
+              {!isLoadingImg && <Skeleton height={'100%'} />}
               <img
                 src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}
-                alt='lamborgini image'
+                alt='product-image'
                 style={{ height: '100%' }}
+                onLoad={() => setIsLoadingImg(true)}
               />
             </Box>
           </SwiperSlide>

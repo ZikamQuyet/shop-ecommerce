@@ -1,19 +1,18 @@
-import React from 'react';
-import { Autoplay, Navigation } from 'swiper';
-import { Box, Link, useMediaQuery } from '@mui/material';
-import { IDataBanner } from '../constants/dataBanner';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-
-
-
+import React, { useState } from 'react'
+import { Autoplay, Navigation } from 'swiper'
+import { Box, useMediaQuery, Skeleton } from '@mui/material'
+import { IDataBanner } from '../constants/dataBanner'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import 'swiper/css/navigation'
+import { Link } from 'react-router-dom'
+import SkeletonLoading from './SkeletonLoading'
 
 interface IBanner {
-  data: IDataBanner[]
+  dataBanner: IDataBanner[]
 }
-const Banner: React.FC<IBanner> = ({ data }) => {
+const Banner: React.FC<IBanner> = ({ dataBanner }) => {
   const matches900 = useMediaQuery('(min-width:900px)')
   return (
     <>
@@ -29,9 +28,9 @@ const Banner: React.FC<IBanner> = ({ data }) => {
           modules={[Autoplay, Navigation]}
           className='mySwiper'
         >
-          {data.map((item) => (
+          {dataBanner.map((item) => (
             <SwiperSlide key={item.id}>
-              <Link href={item.href}>
+              <Link to={item.href}>
                 <img src={item.img} alt='banner' />
               </Link>
             </SwiperSlide>

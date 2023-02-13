@@ -6,4 +6,5 @@ export const getProducts = (page: number | string | undefined) =>
       page: page
     }
   })
+  
 export const getProduct = (id?: number | string | undefined) => axiosClient.get(`products/${id}`)

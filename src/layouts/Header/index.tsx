@@ -4,51 +4,78 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import MenuCustom from './MenuCustom'
 import MenuIcon from '@mui/icons-material/Menu'
 import PersonIcon from '@mui/icons-material/Person'
-import React from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import {
-  Avatar,
-  Badge,
-  Box,
-  Collapse,
-  Grid,
-  List,
-  ListItem,
-  Modal,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Avatar, Badge, Box, Collapse, Grid, List, ListItem, Modal, Stack, TextField, Typography } from '@mui/material'
+import { Link, useNavigate } from 'react-router-dom'
 import useToggle from '../../hooks/useToggle'
 import CartMini from './CartMini'
 import { images } from '../../assets'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { useTranslation } from 'react-i18next'
+import Divider from '@mui/material/Divider'
+import { useQuery } from '@tanstack/react-query'
 
-const styleModalSearch = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  borderRadius: '8px',
-  boxShadow: 24,
-  p: 4
-}
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { getUser } from '../../api/user.api'
+import { getTotal } from '../../utils/getTotal'
+import ModalCustom from '../../components/ModalCustom'
+import { IUser } from '../../types/user.type'
+import { IAuth } from '../../types/auth.type'
+import { ICart } from '../../types/cart.type'
 
 const Header: React.FC = () => {
-  const matches1536 = useMediaQuery('(min-width:1536px)')
-  const matches1200 = useMediaQuery('(min-width:1200px)')
   const matches900 = useMediaQuery('(min-width:900px)')
   const matches600 = useMediaQuery('(min-width:600px)')
 
-  const [openModalSearch, handleToggleModalSearch] = useToggle()
-  const [openMenuMobile, handleToggleMenuMobile] = useToggle()
-  const [openUser, handleToggleUser] = useToggle()
-  const [openCart, handleToggleCart] = useToggle()
+  const { t } = useTranslation(['defaultLayout', 'auth'])
+  const navigate = useNavigate()
 
+  const auth: IAuth = useAppSelector((state) => state.auth)
+  const cart = useAppSelector((state) => state.cart)
+  const dataCart: ICart[] = cart.cart
+
+  const openModalSearch = useToggle()
+  const openMenuMobile = useToggle()
+  const openUser = useToggle()
+  const openCart = useToggle()
+
+  const schema = useMemo(
+    () =>
+      yup
+        .object()
+        .shape({
+          search: yup.string().required('hãy điền tên sản phẩm')
+        })
+        .required(),
+    []
+  )
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    reset
+  } = useForm({
+    mode: 'onSubmit',
+    resolver: yupResolver(schema)
+  })
+
+  const handleSearch = (data: any) => {
+    openModalSearch.handleClose()
+    navigate(`/collections/search?param=${data.search.toUpperCase()}`)
+    reset()
+  }
+  const getDataUser = useQuery({
+    queryKey: ['user'],
+    queryFn: () => getUser(),
+    enabled: auth.tokenLogin ? true : false
+  })
+  const dataUser: IUser = getDataUser.data?.user
   return (
     <Box position='fixed' top={0} left={0} right={0} bgcolor='#fff' zIndex={999}>
       {/* header top */}
@@ -59,19 +86,19 @@ const Header: React.FC = () => {
               <>
                 <Stack direction='row' alignItems='center' gap={1}>
                   <LocationOnIcon />
-                  <span>Địa chỉ: Việt Nam</span>
+                  <span>{t('address')}</span>
                 </Stack>
                 <Stack direction='row' alignItems='center' gap={1}>
                   <LocalPhoneIcon />
-                  <span>SĐT: 01234567890</span>
+                  <span>{t('phone')}</span>
                 </Stack>
               </>
             ) : (
               <>
-                <ButtonCustom bgColor='none' border='none' onClick={handleToggleMenuMobile}>
+                <ButtonCustom bgColor='none' border='none' onClick={openMenuMobile.handleToggle}>
                   <MenuIcon />
                 </ButtonCustom>
-                <Modal open={openMenuMobile} onClose={handleToggleMenuMobile}>
+                <Modal open={openMenuMobile.isOpen} onClose={openMenuMobile.handleToggle}>
                   <Box
                     sx={{
                       position: 'fixed',
@@ -81,7 +108,7 @@ const Header: React.FC = () => {
                       bgcolor: '#fff'
                     }}
                   >
-                    <MenuCustom isMobile={true}></MenuCustom>
+                    <MenuCustom isMobile={true} />
                   </Box>
                 </Modal>
               </>
@@ -93,34 +120,47 @@ const Header: React.FC = () => {
             </Link>
           </Grid>
           <Grid item xs={4} xl={3} display='flex' justifyContent='right' alignItems='center' gap={matches600 ? 3 : 1}>
-            <ButtonCustom padding='0' bgColor='none' border='none' onClick={handleToggleModalSearch}>
+            <ButtonCustom padding='0' bgColor='none' border='none' onClick={openModalSearch.handleToggle}>
               <SearchIcon />
             </ButtonCustom>
 
-            <Modal
-              open={openModalSearch}
-              onClose={handleToggleModalSearch}
-              // aria-labelledby='modal-modal-title'
-              // aria-describedby='modal-modal-description'
+            <ModalCustom
+              open={openModalSearch.isOpen}
+              handleClose={() => {
+                reset()
+                openModalSearch.handleToggle()
+              }}
             >
-              <Box sx={styleModalSearch} display='flex' justifyContent='center' gap={1}>
-                <form action=''>
-                  <Stack direction='row' alignItems='center' gap={1}>
-                    <TextField variant='outlined' size='small' />
-                    <ButtonCustom padding='0' bgColor='none' border='none'>
-                      <SearchIcon />
-                    </ButtonCustom>
-                  </Stack>
-                </form>
-              </Box>
-            </Modal>
-
-            <Box onMouseEnter={handleToggleUser} onMouseLeave={handleToggleUser}>
-              <Box onClick={handleToggleUser} sx={{ cursor: 'pointer' }}>
+              <form action='' onSubmit={handleSubmit(handleSearch)}>
+                <Stack direction='row' alignItems='center' gap={1}>
+                  <Controller
+                    render={({ field, formState }) => (
+                      <TextField
+                        {...field}
+                        id='search'
+                        error={!!formState.errors?.search}
+                        label={'Tìm kiếm'}
+                        variant='outlined'
+                        size='small'
+                        sx={{ width: '80%' }}
+                      />
+                    )}
+                    name='search'
+                    control={control}
+                    defaultValue=''
+                  />
+                  <ButtonCustom padding='0' bgColor='none' border='none' type='submit' disabled={isSubmitting}>
+                    <SearchIcon />
+                  </ButtonCustom>
+                </Stack>
+              </form>
+            </ModalCustom>
+            <Box onMouseEnter={openUser.handleOpen} onMouseLeave={openUser.handleClose} onClick={openUser.handleToggle}>
+              <Box sx={{ cursor: 'pointer' }}>
                 <PersonIcon />
               </Box>
               <Collapse
-                in={openUser}
+                in={openUser.isOpen}
                 timeout='auto'
                 unmountOnExit
                 sx={{
@@ -130,51 +170,72 @@ const Header: React.FC = () => {
                   bgcolor: '#fff',
                   zIndex: 99,
                   left: matches600 ? 'unset' : 0,
-                  boxShadow: 24,
+                  boxShadow: 5,
                   borderRadius: 1
                 }}
               >
                 <List component='div' disablePadding>
-                  <ListItem>
-                    <Link
-                      to='/user'
-                      // underline='none'
-                      // width={'100%'}
-                      // display='flex'
-                      // justifyContent={'space-between'}
-                      // alignItems='center'
-                      style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                    >
-                      <Avatar></Avatar>
-                      User1
-                    </Link>
-                  </ListItem>
-                  <ListItem>
-                    <Link
-                      to='/login'
-                      // underline='none' width={'100%'}
-                    >
-                      <Typography>Đăng nhập</Typography>
-                    </Link>
-                  </ListItem>
-                  <ListItem>
-                    <Link
-                      to='/login'
-                      // underline='none' width={'100%'}
-                    >
-                      <Typography>Đăng Xuất</Typography>
-                    </Link>
-                  </ListItem>
+                  {/* login/register */}
+                  {auth.tokenLogin ? (
+                    <>
+                      <ListItem>
+                        <Link
+                          to='/user'
+                          style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <Stack direction='row' gap={2} alignItems='center'>
+                            <Avatar></Avatar>
+                            {dataUser?.name}
+                          </Stack>
+                        </Link>
+                      </ListItem>
+                      <Divider />
+                      <ListItem
+                        sx={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          localStorage.removeItem('persist:root')
+                          navigate('/')
+                          window.location.reload()
+                        }}
+                      >
+                        <Typography>{t('logout')}</Typography>
+                      </ListItem>
+                    </>
+                  ) : (
+                    <>
+                      <ListItem>
+                        <Typography fontStyle={'italic'} fontWeight={300} fontSize={12}>
+                          {t('not account')}
+                        </Typography>
+                      </ListItem>
+                      <Divider />
+                      <ListItem>
+                        <Link to='/login' onClick={openUser.handleToggle}>
+                          <Typography>{t('auth:login.login')}</Typography>
+                        </Link>
+                      </ListItem>
+                    </>
+                  )}
                 </List>
               </Collapse>
             </Box>
 
-            <Box onMouseEnter={handleToggleCart} onMouseLeave={handleToggleCart}>
-              <Badge badgeContent={2} color='primary' onClick={handleToggleCart}>
+            <Box onMouseEnter={openCart.handleOpen} onMouseLeave={openCart.handleClose}>
+              {/* hiển thị số lượng cart ở đây */}
+              <Badge
+                badgeContent={getTotal(dataCart).totalQuantity || '0'}
+                color='primary'
+                onClick={openCart.handleToggle}
+              >
                 <ShoppingCartIcon sx={{ cursor: 'pointer' }} />
               </Badge>
               <Collapse
-                in={openCart}
+                in={openCart.isOpen}
                 timeout='auto'
                 unmountOnExit
                 sx={{
@@ -184,11 +245,11 @@ const Header: React.FC = () => {
                   bgcolor: '#fff',
                   zIndex: 99,
                   left: matches600 ? 'unset' : 0,
-                  boxShadow: 24,
+                  boxShadow: 5,
                   borderRadius: 1
                 }}
               >
-                <CartMini />
+                <CartMini handleToggle={openCart.handleToggle} />
               </Collapse>
             </Box>
           </Grid>

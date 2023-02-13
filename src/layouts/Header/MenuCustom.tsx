@@ -1,14 +1,15 @@
-import React from 'react'
-import { List, ListItem, Typography, Collapse, Stack } from '@mui/material'
-
-import useMediaQuery from '@mui/material/useMediaQuery'
-
+import ButtonCustom from '../../components/ButtonCustom'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import ButtonCustom from '../../components/ButtonCustom'
+import React from 'react'
+import useMediaQuery from '@mui/material/useMediaQuery'
 import useToggle from '../../hooks/useToggle'
-
-import { Link } from 'react-router-dom'
+import { Collapse, List, ListItem, Stack, Typography } from '@mui/material'
+import { getCategories } from '../../api/categories.api'
+import { Link, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
+import { ICategories } from '../../types/product.type'
 
 interface IMenuCustom {
   isMobile?: boolean
@@ -16,10 +17,17 @@ interface IMenuCustom {
 const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
   const matches1536 = useMediaQuery('(min-width:1536px)')
   const matches1200 = useMediaQuery('(min-width:1200px)')
-  const matches900 = useMediaQuery('(min-width:900px)')
-  const matches600 = useMediaQuery('(min-width:600px)')
 
-  const [open, handleToggle] = useToggle()
+  const { t } = useTranslation(['defaultLayout', 'auth'])
+
+  const open = useToggle()
+
+  const getDataCategories = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => getCategories()
+  })
+  const dataCategories: ICategories[] = getDataCategories.data?.data
+
   return (
     <>
       <Stack
@@ -40,29 +48,27 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
           disablePadding
         >
           <ListItem>
-            <Link
-              to='/'
-              style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}
-            >
-              <Typography>Trang chủ</Typography>
+            <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
+              <Typography>{t('home')}</Typography>
             </Link>
           </ListItem>
           <ListItem
-            onMouseEnter={handleToggle}
-            onMouseLeave={handleToggle}
+            onMouseEnter={open.handleOpen}
+            onMouseLeave={open.handleClose}
+            onClick={open.handleToggle}
             sx={{ display: 'flex', flexDirection: 'column' }}
           >
             <Stack width={'100%'} direction='row' justifyContent={'space-between'}>
               <Link to='/collections' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-                <Typography>Sản phẩm</Typography>
+                <Typography>{t('product')}</Typography>
               </Link>
-              <ButtonCustom bgColor='none' border='none' onClick={handleToggle} padding={'0'}>
-                {open ? <ExpandLess /> : <ExpandMore />}
+              <ButtonCustom bgColor='none' border='none' onClick={open.handleToggle} padding={'0'}>
+                {open.isOpen ? <ExpandLess /> : <ExpandMore />}
               </ButtonCustom>
             </Stack>
 
             <Collapse
-              in={open}
+              in={open.isOpen}
               timeout='auto'
               unmountOnExit
               sx={
@@ -74,44 +80,38 @@ const MenuCustom: React.FC<IMenuCustom> = ({ isMobile }) => {
                       right: 0,
                       top: 40,
                       bgcolor: '#fff',
-                      boxShadow: 24,
+                      boxShadow: 5,
                       borderRadius: 1
                     }
               }
             >
-              <List component='div' disablePadding>
-                <ListItem>
-                  <Link to='/collections' style={{ width: '100%' }}>
-                    <Typography>Top</Typography>
-                  </Link>
-                </ListItem>
-                <ListItem>
-                  <Link to='/collections' style={{ width: '100%' }}>
-                    <Typography>Bottom</Typography>
-                  </Link>
-                </ListItem>
-                <ListItem>
-                  <Link to='/collections' style={{ width: '100%' }}>
-                    <Typography>ACCESSORY</Typography>
-                  </Link>
-                </ListItem>
-              </List>
+              {!getDataCategories.isLoading && (
+                <List component='div' disablePadding>
+                  {dataCategories.map((category: any) => (
+                    <ListItem key={category.id}>
+                      <Link to={`/collections/${category.id}`} style={{ width: '100%' }}>
+                        <Typography>{category.title}</Typography>
+                      </Link>
+                    </ListItem>
+                  ))}
+                </List>
+              )}
             </Collapse>
           </ListItem>
 
           <ListItem>
             <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-              <Typography>Blog</Typography>
+              <Typography>{t('blog')}</Typography>
             </Link>
           </ListItem>
           <ListItem>
             <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-              <Typography>Về chúng tôi</Typography>
+              <Typography>{t('about us')}</Typography>
             </Link>
           </ListItem>
           <ListItem>
             <Link to='/' style={{ width: '100%', textAlign: `${isMobile ? 'unset' : 'center'}` }}>
-              <Typography>Liên hệ</Typography>
+              <Typography>{t('contact')}</Typography>
             </Link>
           </ListItem>
         </List>

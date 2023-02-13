@@ -1,5 +1,5 @@
-import axios from 'axios'
-import { REACT_APP_API_URL } from '../constants/constants'
+import axios from 'axios';
+import { REACT_APP_API_URL } from '../constants/constants';
 
 const axiosClient = axios.create({
   baseURL: REACT_APP_API_URL,
@@ -9,8 +9,14 @@ const axiosClient = axios.create({
   }
 })
 
-axiosClient.interceptors.request.use(async (config) => {
+axiosClient.interceptors.request.use(async (config: any) => {
   // Handle token here ...
+  const dataReduxPersist: any = localStorage.getItem('persist:root')
+  const token = JSON.parse(JSON.parse(dataReduxPersist).auth).tokenLogin
+
+  if (token) {
+    config.headers['Authorization'] = 'Bearer ' + token
+  }
   return config
 })
 

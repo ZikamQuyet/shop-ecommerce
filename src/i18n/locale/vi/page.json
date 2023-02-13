@@ -1,0 +1,57 @@
+{
+  "delete": "Xóa",
+  "not function": "Chưa có chức năng này",
+  "color": "Màu sắc:",
+  "size": "Kích thước:",
+  "add cart": "Thêm vào giỏ hàng",
+  "buy now": "Mua ngay",
+
+  "cartPage": {
+    "cart": "Giỏ hàng",
+    "no products": "Không có sản phẩm nào",
+    "provisional": "Tạm tính:",
+    "into money": "Thành tiền:",
+    "pay now": "Thanh toán ngay",
+    "continue shopping": "Tiếp tục mua hàng"
+  },
+  "userPage": {
+    "personal information": "Thông tin cá nhân",
+    "your account": "Tài khoản của bạn",
+    "history": "Lịch sử mua hàng",
+    "discount": "Ưu đãi của bạn",
+    "say hi": "Xin chào",
+    "update success": "Cập nhật thành công",
+    "update error": "Cập nhật thất bại",
+    "gender": "Giới tính",
+    "male": "Nam",
+    "female": "Nữ",
+    "other": "Khác",
+    "update": "Cập nhật",
+    "dob": "Ngày sinh"
+  },
+  "productPage": {
+    "related products": " Sản phẩm liên quan",
+    "save": "Tiết kiệm: "
+  },
+  "collectionPage": {
+    "all products": "Tất cả sản phẩm",
+    "categories": "Danh mục",
+    "search": "Tìm theo"
+  },
+  "notFoundPage": {
+    "txt1": "Oops! Trang bạn tìm kiếm không tồn tại.",
+    "txt2": "Website mới nâng cấp, do đó có một số link có thể được thay đổi.",
+    "txt3": "Bạn vui lòng trở lại trang chủ, thử tìm kiếm với từ khóa khác hoặc tiếp tục mua sắm!",
+    "go to back home": "Quay lại trang chủ"
+  },
+  "orderPage": {
+    "payment": "Thanh toán",
+    "customer information": "Thông tin khách hàng",
+    "payment methods": "Phương thức thanh toán",
+    "payment on delivery": "Thanh toán khi nhận hàng",
+    "order": "Đơn hàng",
+    "total": "Tổng cộng:",
+    "back to cart": "Quay về giỏ hàng",
+    "ordering": "Đặt hàng"
+  }
+}

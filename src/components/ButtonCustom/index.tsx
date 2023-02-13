@@ -1,5 +1,5 @@
-import React, { ButtonHTMLAttributes } from 'react'
-import ButtonStyles from './ButtonStyles.styled'
+import ButtonStyles from './ButtonStyles.styled';
+import React, { ButtonHTMLAttributes } from 'react';
 
 export interface IButton extends ButtonHTMLAttributes<HTMLButtonElement> {
   type?: 'button' | 'submit' | undefined

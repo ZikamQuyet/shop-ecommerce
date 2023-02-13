@@ -16,6 +16,7 @@ import payment1 from './images/payment_1.svg'
 import payment2 from './images/payment_2.svg'
 import payment3 from './images/payment_3.svg'
 import payment4 from './images/payment_4.svg'
+import paymentSuccess from './images/payment-success.png'
 
 export const images = {
   slider1,
@@ -35,5 +36,6 @@ export const images = {
   payment1,
   payment2,
   payment3,
-  payment4
+  payment4,
+  paymentSuccess
 }

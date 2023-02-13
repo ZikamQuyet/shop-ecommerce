@@ -12,25 +12,36 @@ import SkeletonLoading from './components/SkeletonLoading'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
+import './i18n/config'
+
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistor, store } from './redux/store'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider theme={customTheme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Suspense
-          fallback={
-            <>
-              <SkeletonLoading />
-            </>
-          }
-        >
+
+      <Provider store={store}>
+        <PersistGate loading={<SkeletonLoading />} persistor={persistor}>
           <QueryClientProvider client={queryClient}>
-            <App />
+            <BrowserRouter>
+              <Suspense
+                fallback={
+                  <>
+                    <SkeletonLoading />
+                  </>
+                }
+              >
+                <App />
+              </Suspense>
+            </BrowserRouter>
           </QueryClientProvider>
-        </Suspense>
-        <ToastContainer />
-      </BrowserRouter>
+        </PersistGate>
+      </Provider>
+
+      <ToastContainer />
     </ThemeProvider>
   </React.StrictMode>
 )
