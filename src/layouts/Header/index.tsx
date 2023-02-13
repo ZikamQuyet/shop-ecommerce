@@ -4,7 +4,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 import MenuCustom from './MenuCustom'
 import MenuIcon from '@mui/icons-material/Menu'
 import PersonIcon from '@mui/icons-material/Person'
-import React from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -12,38 +12,70 @@ import { Avatar, Badge, Box, Collapse, Grid, List, ListItem, Modal, Stack, TextF
 import { Link, useNavigate } from 'react-router-dom'
 import useToggle from '../../hooks/useToggle'
 import CartMini from './CartMini'
-import { useAppSelector } from '../../redux/hooks'
+import { images } from '../../assets'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { useTranslation } from 'react-i18next'
 import Divider from '@mui/material/Divider'
+import { useQuery } from '@tanstack/react-query'
 
-const styleModalSearch = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  borderRadius: '8px',
-  boxShadow: 24,
-  p: 4
-}
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { getUser } from '../../api/user.api'
+import { getTotal } from '../../utils/getTotal'
+import ModalCustom from '../../components/ModalCustom'
+import { IUser } from '../../types/user.type'
+import { IAuth } from '../../types/auth.type'
+import { ICart } from '../../types/cart.type'
 
 const Header: React.FC = () => {
-  const matches1536 = useMediaQuery('(min-width:1536px)')
-  const matches1200 = useMediaQuery('(min-width:1200px)')
   const matches900 = useMediaQuery('(min-width:900px)')
   const matches600 = useMediaQuery('(min-width:600px)')
 
   const { t } = useTranslation(['defaultLayout', 'auth'])
   const navigate = useNavigate()
 
-  const [openModalSearch, handleToggleModalSearch] = useToggle()
-  const [openMenuMobile, handleToggleMenuMobile] = useToggle()
-  const [openUser, handleToggleUser] = useToggle()
-  const [openCart, handleToggleCart] = useToggle()
+  const auth: IAuth = useAppSelector((state) => state.auth)
+  const cart = useAppSelector((state) => state.cart)
+  const dataCart: ICart[] = cart.cart
 
-  const auth = useAppSelector((state) => state.auth)
+  const openModalSearch = useToggle()
+  const openMenuMobile = useToggle()
+  const openUser = useToggle()
+  const openCart = useToggle()
 
+  const schema = useMemo(
+    () =>
+      yup
+        .object()
+        .shape({
+          search: yup.string().required('hãy điền tên sản phẩm')
+        })
+        .required(),
+    []
+  )
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    reset
+  } = useForm({
+    mode: 'onSubmit',
+    resolver: yupResolver(schema)
+  })
+
+  const handleSearch = (data: any) => {
+    openModalSearch.handleClose()
+    navigate(`/collections/search?param=${data.search.toUpperCase()}`)
+    reset()
+  }
+  const getDataUser = useQuery({
+    queryKey: ['user'],
+    queryFn: () => getUser(),
+    enabled: auth.tokenLogin ? true : false
+  })
+  const dataUser: IUser = getDataUser.data?.user
   return (
     <Box position='fixed' top={0} left={0} right={0} bgcolor='#fff' zIndex={999}>
       {/* header top */}
@@ -63,10 +95,10 @@ const Header: React.FC = () => {
               </>
             ) : (
               <>
-                <ButtonCustom bgColor='none' border='none' onClick={handleToggleMenuMobile}>
+                <ButtonCustom bgColor='none' border='none' onClick={openMenuMobile.handleToggle}>
                   <MenuIcon />
                 </ButtonCustom>
-                <Modal open={openMenuMobile} onClose={handleToggleMenuMobile}>
+                <Modal open={openMenuMobile.isOpen} onClose={openMenuMobile.handleToggle}>
                   <Box
                     sx={{
                       position: 'fixed',
@@ -76,7 +108,7 @@ const Header: React.FC = () => {
                       bgcolor: '#fff'
                     }}
                   >
-                    <MenuCustom isMobile={true}></MenuCustom>
+                    <MenuCustom isMobile={true} />
                   </Box>
                 </Modal>
               </>
@@ -84,33 +116,51 @@ const Header: React.FC = () => {
           </Grid>
           <Grid item xs={4} xl={6} display='flex' justifyContent='center'>
             <Link to='/' style={{ display: 'flex', alignItems: 'center' }}>
-              <img src='images/logo.png' alt='logo' />
+              <img src={images.logo} alt='logo' />
             </Link>
           </Grid>
           <Grid item xs={4} xl={3} display='flex' justifyContent='right' alignItems='center' gap={matches600 ? 3 : 1}>
-            <ButtonCustom padding='0' bgColor='none' border='none' onClick={handleToggleModalSearch}>
+            <ButtonCustom padding='0' bgColor='none' border='none' onClick={openModalSearch.handleToggle}>
               <SearchIcon />
             </ButtonCustom>
 
-            <Modal open={openModalSearch} onClose={handleToggleModalSearch}>
-              <Box sx={styleModalSearch} display='flex' justifyContent='center' gap={1}>
-                <form action=''>
-                  <Stack direction='row' alignItems='center' gap={1}>
-                    <TextField variant='outlined' size='small' />
-                    <ButtonCustom padding='0' bgColor='none' border='none'>
-                      <SearchIcon />
-                    </ButtonCustom>
-                  </Stack>
-                </form>
-              </Box>
-            </Modal>
-
-            <Box onMouseEnter={handleToggleUser} onMouseLeave={handleToggleUser}>
-              <Box onClick={handleToggleUser} sx={{ cursor: 'pointer' }}>
+            <ModalCustom
+              open={openModalSearch.isOpen}
+              handleClose={() => {
+                reset()
+                openModalSearch.handleToggle()
+              }}
+            >
+              <form action='' onSubmit={handleSubmit(handleSearch)}>
+                <Stack direction='row' alignItems='center' gap={1}>
+                  <Controller
+                    render={({ field, formState }) => (
+                      <TextField
+                        {...field}
+                        id='search'
+                        error={!!formState.errors?.search}
+                        label={'Tìm kiếm'}
+                        variant='outlined'
+                        size='small'
+                        sx={{ width: '80%' }}
+                      />
+                    )}
+                    name='search'
+                    control={control}
+                    defaultValue=''
+                  />
+                  <ButtonCustom padding='0' bgColor='none' border='none' type='submit' disabled={isSubmitting}>
+                    <SearchIcon />
+                  </ButtonCustom>
+                </Stack>
+              </form>
+            </ModalCustom>
+            <Box onMouseEnter={openUser.handleOpen} onMouseLeave={openUser.handleClose} onClick={openUser.handleToggle}>
+              <Box sx={{ cursor: 'pointer' }}>
                 <PersonIcon />
               </Box>
               <Collapse
-                in={openUser}
+                in={openUser.isOpen}
                 timeout='auto'
                 unmountOnExit
                 sx={{
@@ -120,7 +170,7 @@ const Header: React.FC = () => {
                   bgcolor: '#fff',
                   zIndex: 99,
                   left: matches600 ? 'unset' : 0,
-                  boxShadow: 24,
+                  boxShadow: 5,
                   borderRadius: 1
                 }}
               >
@@ -138,8 +188,10 @@ const Header: React.FC = () => {
                             alignItems: 'center'
                           }}
                         >
-                          <Avatar></Avatar>
-                          User1
+                          <Stack direction='row' gap={2} alignItems='center'>
+                            <Avatar></Avatar>
+                            {dataUser?.name}
+                          </Stack>
                         </Link>
                       </ListItem>
                       <Divider />
@@ -147,6 +199,7 @@ const Header: React.FC = () => {
                         sx={{ cursor: 'pointer' }}
                         onClick={() => {
                           localStorage.removeItem('persist:root')
+                          navigate('/')
                           window.location.reload()
                         }}
                       >
@@ -162,7 +215,7 @@ const Header: React.FC = () => {
                       </ListItem>
                       <Divider />
                       <ListItem>
-                        <Link to='/login'>
+                        <Link to='/login' onClick={openUser.handleToggle}>
                           <Typography>{t('auth:login.login')}</Typography>
                         </Link>
                       </ListItem>
@@ -172,12 +225,17 @@ const Header: React.FC = () => {
               </Collapse>
             </Box>
 
-            <Box onMouseEnter={handleToggleCart} onMouseLeave={handleToggleCart}>
-              <Badge badgeContent={2} color='primary' onClick={handleToggleCart}>
+            <Box onMouseEnter={openCart.handleOpen} onMouseLeave={openCart.handleClose}>
+              {/* hiển thị số lượng cart ở đây */}
+              <Badge
+                badgeContent={getTotal(dataCart).totalQuantity || '0'}
+                color='primary'
+                onClick={openCart.handleToggle}
+              >
                 <ShoppingCartIcon sx={{ cursor: 'pointer' }} />
               </Badge>
               <Collapse
-                in={openCart}
+                in={openCart.isOpen}
                 timeout='auto'
                 unmountOnExit
                 sx={{
@@ -187,11 +245,11 @@ const Header: React.FC = () => {
                   bgcolor: '#fff',
                   zIndex: 99,
                   left: matches600 ? 'unset' : 0,
-                  boxShadow: 24,
+                  boxShadow: 5,
                   borderRadius: 1
                 }}
               >
-                <CartMini />
+                <CartMini handleToggle={openCart.handleToggle} />
               </Collapse>
             </Box>
           </Grid>

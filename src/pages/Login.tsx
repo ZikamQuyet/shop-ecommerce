@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import * as yup from 'yup'
+import React, { useEffect, useMemo, useState } from 'react'
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -13,20 +15,18 @@ import {
   Stack,
   TextField,
   Typography,
-  useMediaQuery,
-  Box
+  useMediaQuery
 } from '@mui/material'
-
+import { Controller, useForm } from 'react-hook-form'
+import { FIRST } from '../constants/constants'
+import { images } from '../assets'
 import { Link, useNavigate } from 'react-router-dom'
-import * as yup from 'yup'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-
-import { toast } from 'react-toastify'
-import { useTranslation } from 'react-i18next'
 import { login } from '../redux/slice/authSlice'
-
+import { toast } from 'react-toastify'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { useTranslation } from 'react-i18next'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { IAuth } from '../types/auth.type'
 
 const Login: React.FC = () => {
   const matches900 = useMediaQuery('(min-width:900px)')
@@ -35,9 +35,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate()
 
   const dispatch = useAppDispatch()
-  const auth = useAppSelector((state) => state.auth)
-
-
+  const auth: IAuth = useAppSelector((state) => state.auth)
 
   const { t } = useTranslation('auth')
 
@@ -49,17 +47,17 @@ const Login: React.FC = () => {
           email: yup.string().required(t('validation.email is required')).email(t('validation.wrong email format')),
           password: yup
             .string()
-            // .matches(
-            //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-            //   t('validation.wrong password format')
-            // )
+            .matches(
+              /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+              t('validation.wrong password format')
+            )
             .required(t('validation.password is required'))
         })
         .required(),
     []
   )
 
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const handleClickShowPassword = () => setShowPassword((show) => !show)
 
@@ -72,14 +70,14 @@ const Login: React.FC = () => {
     handleSubmit,
     formState: { isSubmitting, errors }
   } = useForm({
-    mode: 'onChange',
+    mode: 'onSubmit',
     resolver: yupResolver(schema)
   })
 
   useEffect(() => {
     const arrErr: any = Object.values(errors)
     if (arrErr.length > 0) {
-      toast.error(arrErr[0]?.message, {
+      toast.error(arrErr[FIRST]?.message, {
         pauseOnHover: false
       })
     }
@@ -99,12 +97,13 @@ const Login: React.FC = () => {
     document.title = t('login.login')
   }, [])
 
+  // return null
   return (
     <>
       <Container maxWidth={'xl'}>
-        <Grid container alignItems={'center'} m={matches900 ? '10rem 0 4rem' : '6rem 0 2rem'}>
+        <Grid container alignItems={'center'} m={matches900 ? '8rem 0 4rem' : '6rem 0 4rem'}>
           <Grid item md={6} display={matches900 ? 'block' : 'none'}>
-            <img src='images/login-register/login.jpeg' alt='login' style={{ width: '100%', objectFit: 'cover' }} />
+            <img src={images.login} alt='login' style={{ width: '100%', objectFit: 'cover' }} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography

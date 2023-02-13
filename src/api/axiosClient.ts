@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
+import { REACT_APP_API_URL } from '../constants/constants';
 
-const REACT_APP_API_URL = 'http://duy.fresher.ameladev.click/api/'
 const axiosClient = axios.create({
   baseURL: REACT_APP_API_URL,
   timeout: 10000,
@@ -12,7 +12,8 @@ const axiosClient = axios.create({
 axiosClient.interceptors.request.use(async (config: any) => {
   // Handle token here ...
   const dataReduxPersist: any = localStorage.getItem('persist:root')
-  const token = JSON.parse(JSON.parse(dataReduxPersist).auth).token
+  const token = JSON.parse(JSON.parse(dataReduxPersist).auth).tokenLogin
+
   if (token) {
     config.headers['Authorization'] = 'Bearer ' + token
   }

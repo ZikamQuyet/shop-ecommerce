@@ -2,11 +2,11 @@ img {
   width: 100%;
   object-fit: cover;
 }
-a{
-  text-decoration: none;
+a {
+  text-decoration: none !important;
   color: #000;
 }
 .swiper-button-prev,
 .swiper-button-next {
-  color: #ccc;
+  color: #ccc !important;
 }

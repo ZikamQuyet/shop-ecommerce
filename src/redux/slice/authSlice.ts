@@ -27,22 +27,22 @@ const authSlice = createSlice({
     }
   }
 })
-export const login = (data: TLogin) => async (dispatch: (arg0: { payload: any; type: 'auth/loginSuccess' }) => void) => {
-  try {
-    const res = await loginAPI(data)
-    dispatch(loginSuccess(res))
-  } catch (error) {
-    toast.error('Bạn nhập sai Email hoặc Mật khẩu')
-  }
-}
-export const register =
-  ({ name, email, password }: IRegister) =>
-  async (dispatch: (arg0: { payload: any; type: 'auth/registerSuccess' }) => void) => {
+export const login =
+  (data: TLogin) => async (dispatch: (arg0: { payload: any; type: 'auth/loginSuccess' }) => void) => {
     try {
-      const res = await registerAPI({ name, email, password })
-      dispatch(registerSuccess(res))
+      const res = await loginAPI(data)
+      dispatch(loginSuccess(res))
     } catch (error) {
       toast.error('Bạn nhập sai Email hoặc Mật khẩu')
+    }
+  }
+export const register =
+  (data: IRegister) => async (dispatch: (arg0: { payload: any; type: 'auth/registerSuccess' }) => void) => {
+    try {
+      const res = await registerAPI(data)
+      dispatch(registerSuccess(res))
+    } catch (error) {
+      toast.error('Đăng ký thất bại')
     }
   }
 export const { loginSuccess, registerSuccess } = authSlice.actions

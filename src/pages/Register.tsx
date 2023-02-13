@@ -24,9 +24,12 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 import { toast } from 'react-toastify'
+import { FIRST } from '../constants/constants'
+import { images } from '../assets'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { register } from '../redux/slice/authSlice'
 import { useTranslation } from 'react-i18next'
+import { IAuth } from '../types/auth.type'
 
 const Register: React.FC = () => {
   const matches900 = useMediaQuery('(min-width:900px)')
@@ -54,11 +57,11 @@ const Register: React.FC = () => {
     []
   )
 
-  const [showPassword1, setShowPassword1] = React.useState(false)
+  const [showPassword1, setShowPassword1] = React.useState<boolean>(false)
 
   const handleClickShowPassword1 = () => setShowPassword1((show) => !show)
 
-  const [showPassword2, setShowPassword2] = React.useState(false)
+  const [showPassword2, setShowPassword2] = React.useState<boolean>(false)
 
   const handleClickShowPassword2 = () => setShowPassword2((show) => !show)
 
@@ -71,25 +74,24 @@ const Register: React.FC = () => {
     handleSubmit,
     formState: { isSubmitting, errors }
   } = useForm({
-    mode: 'onChange',
+    mode: 'onSubmit',
     resolver: yupResolver(schema)
   })
 
   useEffect(() => {
     const arrErr: any = Object.values(errors)
     if (arrErr.length > 0) {
-      toast.error(arrErr[0]?.message, {
+      toast.error(arrErr[FIRST]?.message, {
         pauseOnHover: false
       })
     }
   }, [errors])
 
   const dispatch = useAppDispatch()
-  const auth = useAppSelector((state) => state.auth)
+  const auth: IAuth = useAppSelector((state: any) => state.auth)
 
   const handleRegister = (data: any) => {
-    const { name, email, password } = data
-    dispatch(register({ name, email, password }))
+    dispatch(register(data))
   }
 
   useEffect(() => {
@@ -105,9 +107,9 @@ const Register: React.FC = () => {
   return (
     <>
       <Container maxWidth={'xl'}>
-        <Grid container alignItems={'center'} m='8rem 0'>
+        <Grid container alignItems={'center'} m={matches900 ? '8rem 0 4rem' : '6rem 0 4rem'}>
           <Grid item md={6} display={matches900 ? 'block' : 'none'}>
-            <img src='images/login-register/register.jpeg' alt='login' style={{ width: '100%', objectFit: 'cover' }} />
+            <img src={images.register} alt='login' style={{ width: '100%', objectFit: 'cover' }} />
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant={matches600 ? 'h2' : 'h3'} fontWeight={400} textAlign='center' mb={5}>
@@ -213,7 +215,7 @@ const Register: React.FC = () => {
                 defaultValue=''
               />
 
-              <Button variant='contained' color='primary' size='large' type='submit'>
+              <Button variant='contained' color='primary' size='large' type='submit' disabled={isSubmitting}>
                 {t('register.register')}
               </Button>
               <Box>

@@ -8,6 +8,10 @@ import { ThemeProvider } from '@mui/material'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import './index.scss'
+import SkeletonLoading from './components/SkeletonLoading'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 import './i18n/config'
 
 import { Provider } from 'react-redux'
@@ -18,16 +22,26 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ThemeProvider theme={customTheme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Suspense fallback={<>...</>}>
-          <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-              <App />
-            </PersistGate>
-          </Provider>
-        </Suspense>
-        <ToastContainer />
-      </BrowserRouter>
+
+      <Provider store={store}>
+        <PersistGate loading={<SkeletonLoading />} persistor={persistor}>
+          <QueryClientProvider client={queryClient}>
+            <BrowserRouter>
+              <Suspense
+                fallback={
+                  <>
+                    <SkeletonLoading />
+                  </>
+                }
+              >
+                <App />
+              </Suspense>
+            </BrowserRouter>
+          </QueryClientProvider>
+        </PersistGate>
+      </Provider>
+
+      <ToastContainer />
     </ThemeProvider>
   </React.StrictMode>
 )

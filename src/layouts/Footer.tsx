@@ -8,11 +8,11 @@ import LocationOnIcon from '@mui/icons-material/LocationOn'
 
 import { Link, useNavigate } from 'react-router-dom'
 import { Box, Button, FormControl, Grid, List, ListItem, Stack, TextField, Typography } from '@mui/material'
+import { images } from '../assets'
 import { useTranslation } from 'react-i18next'
 
 const Footer = () => {
   const { t } = useTranslation(['defaultLayout', 'auth'])
-  const navigate = useNavigate()
   return (
     <>
       <Box p='1rem' borderTop={'1px solid #000'}>
@@ -20,7 +20,7 @@ const Footer = () => {
           <Grid item xs={12} sm={6} lg={3} display='flex' flexDirection='column' gap={2}>
             <Box>
               <Link to='/'>
-                <img src='images/logo.png' alt='logo' />
+                <img src={images.logo} alt='logo' />
               </Link>
             </Box>
             <Stack direction='row' spacing={1}>
@@ -100,22 +100,22 @@ const Footer = () => {
             <List sx={{ display: 'flex', gap: '1rem' }}>
               <ListItem disablePadding sx={{ width: 'auto' }}>
                 <Link to='/'>
-                  <img src='images/payment_1.svg' alt='payment' />
+                  <img src={images.payment1} alt='payment' />
                 </Link>
               </ListItem>
               <ListItem disablePadding sx={{ width: 'auto' }}>
                 <Link to='/'>
-                  <img src='images/payment_2.svg' alt='payment' />
+                  <img src={images.payment2} alt='payment' />
                 </Link>
               </ListItem>
               <ListItem disablePadding sx={{ width: 'auto' }}>
                 <Link to='/'>
-                  <img src='images/payment_3.svg' alt='payment' />
+                  <img src={images.payment3} alt='payment' />
                 </Link>
               </ListItem>
               <ListItem disablePadding sx={{ width: 'auto' }}>
                 <Link to='/'>
-                  <img src='images/payment_4.svg' alt='payment' />
+                  <img src={images.payment4} alt='payment' />
                 </Link>
               </ListItem>
             </List>

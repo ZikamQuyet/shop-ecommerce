@@ -1,5 +1,5 @@
-import { IButton } from "./index";
-import styled from "styled-components";
+import styled from 'styled-components';
+import { IButton } from './index';
 
 const ButtonStyles = styled.button<IButton>`
   width: ${(props) => props.width};
