@@ -148,7 +148,7 @@ const Collections: React.FC = () => {
                 sx={{
                   position: 'absolute',
                   top: 40,
-                  right: `${matches900 ? '16px' : '0px'}`,
+                  right: `${matches900 ? '1rem' : '0px'}`,
                   width: `${matches900 ? 'unset' : '100vw'}`,
                   bgcolor: '#fff',
                   boxShadow: 5,

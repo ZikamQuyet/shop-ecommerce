@@ -8,7 +8,20 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { Avatar, Badge, Box, Collapse, Grid, List, ListItem, Modal, Stack, TextField, Typography } from '@mui/material'
+import {
+  Avatar,
+  Badge,
+  Box,
+  Collapse,
+  Drawer,
+  Grid,
+  List,
+  ListItem,
+  Modal,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import useToggle from '../../hooks/useToggle'
 import CartMini from './CartMini'
@@ -40,9 +53,22 @@ const Header: React.FC = () => {
   const dataCart: ICart[] = cart.cart
 
   const openModalSearch = useToggle()
-  const openMenuMobile = useToggle()
   const openUser = useToggle()
   const openCart = useToggle()
+
+  const [state, setState] = React.useState({
+    left: false
+  })
+  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return
+    }
+
+    setState({ ...state, ['left']: open })
+  }
 
   const schema = useMemo(
     () =>
@@ -95,22 +121,13 @@ const Header: React.FC = () => {
               </>
             ) : (
               <>
-                <ButtonCustom bgColor='none' border='none' onClick={openMenuMobile.handleToggle}>
+                <ButtonCustom bgColor='none' border='none' onClick={toggleDrawer(true)}>
                   <MenuIcon />
                 </ButtonCustom>
-                <Modal open={openMenuMobile.isOpen} onClose={openMenuMobile.handleToggle}>
-                  <Box
-                    sx={{
-                      position: 'fixed',
-                      top: 0,
-                      bottom: 0,
-                      width: `${matches600 ? '30%' : '50%'}`,
-                      bgcolor: '#fff'
-                    }}
-                  >
-                    <MenuCustom isMobile={true} />
-                  </Box>
-                </Modal>
+
+                <Drawer anchor={'left'} open={state['left']} onClose={toggleDrawer(false)} sx={{ width: '50%' }}>
+                  <MenuCustom isMobile={true} toggleDrawer={toggleDrawer(false)} />
+                </Drawer>
               </>
             )}
           </Grid>
@@ -249,7 +266,7 @@ const Header: React.FC = () => {
                   borderRadius: 1
                 }}
               >
-                <CartMini handleToggle={openCart.handleToggle} />
+                <CartMini handleCloseCartMini={openCart.handleToggle} />
               </Collapse>
             </Box>
           </Grid>

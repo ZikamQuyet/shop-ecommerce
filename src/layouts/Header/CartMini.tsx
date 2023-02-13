@@ -1,4 +1,4 @@
-import { List, ListItem, Stack, Button, Box, Typography, Divider, Skeleton } from '@mui/material'
+import { List, ListItem, Stack, Button, Box, Typography, Divider, Skeleton, useMediaQuery } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import CloseIcon from '@mui/icons-material/Close'
@@ -12,11 +12,15 @@ import { getTotal, getTotalPriceItem } from '../../utils/getTotal'
 import { decrementQuantity, incrementQuantity, removeItem } from '../../redux/slice/cartSlice'
 import { ICart } from '../../types/cart.type'
 import { useState } from 'react'
+import ModalCustom from '../../components/ModalCustom'
+import useToggle from '../../hooks/useToggle'
+import ModalConfirm from '../../components/ModalConfirm'
 
 interface ICartMini {
-  handleToggle: () => void
+  handleCloseCartMini: () => void
 }
-const CartMini: React.FC<ICartMini> = ({ handleToggle = () => {} }) => {
+const CartMini: React.FC<ICartMini> = ({ handleCloseCartMini = () => {} }) => {
+  const matches600 = useMediaQuery('(min-width:600px)')
   const { t } = useTranslation(['defaultLayout'])
   const [isLoadingImg, setIsLoadingImg] = useState(false)
   const navigate = useNavigate()
@@ -24,10 +28,12 @@ const CartMini: React.FC<ICartMini> = ({ handleToggle = () => {} }) => {
   const cart = useAppSelector((state) => state.cart)
   const dataCart: ICart[] = cart.cart
 
+  const openConfirm = useToggle()
+
   return (
     <>
       {dataCart.length !== 0 && (
-        <Box p={1}>
+        <Box p={1} width={matches600 ? '345px' : 'unset'}>
           <List
             sx={{
               borderBottom: '1px dashed #000',
@@ -44,24 +50,26 @@ const CartMini: React.FC<ICartMini> = ({ handleToggle = () => {} }) => {
                 <ListItem
                   disablePadding
                   alignItems='flex-start'
-                  sx={{ justifyContent: 'space-between', padding: '0.5rem 0 ' }}
+                  sx={{ justifyContent: 'space-between', padding: '0.5rem 0', gap: '1rem' }}
                 >
                   <Box width={'30%'}>
-                    <Link to={`/product/${item.id}`}>
-                      {!isLoadingImg && <Skeleton height='6.25rem' />}
-                      <img
-                        src={`${BASE_URL_IMAGE}${item.img}`}
-                        alt=''
-                        style={{ height: '6.25rem', width: 'auto', objectFit: 'cover' }}
-                        onLoad={() => {
-                          setIsLoadingImg(true)
-                        }}
-                      />
+                    <Link to={`/product/${item.id}`} onClick={handleCloseCartMini}>
+                      <Box height={'6.25rem'}>
+                        {!isLoadingImg && <Skeleton sx={{ height: '6.25rem', width: '100%', transform: 'unset' }} />}
+                        <img
+                          src={`${BASE_URL_IMAGE}${item.img}`}
+                          alt=''
+                          style={{ height: '100%' }}
+                          onLoad={() => {
+                            setIsLoadingImg(true)
+                          }}
+                        />
+                      </Box>
                     </Link>
                   </Box>
 
-                  <Box width={'60%'}>
-                    <Link to={`/product/${item.id}`}>
+                  <Box width={'50%'}>
+                    <Link to={`/product/${item.id}`} onClick={handleCloseCartMini}>
                       <Typography sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                         {item.name}
                       </Typography>
@@ -98,12 +106,17 @@ const CartMini: React.FC<ICartMini> = ({ handleToggle = () => {} }) => {
                     />
                   </Box>
                   <Box width={'10%'}>
-                    <Button
-                      sx={{ minWidth: 0, padding: 0 }}
-                      onClick={() => dispatch(removeItem({ id: item.id, color: item.color, size: item.size }))}
-                    >
+                    <Button sx={{ minWidth: 0, padding: 0 }} onClick={openConfirm.handleOpen}>
                       <CloseIcon />
                     </Button>
+                    <ModalConfirm
+                      open={openConfirm.isOpen}
+                      handleClose={() => {
+                        openConfirm.handleClose()
+                      }}
+                      handleCloseCartMini={() => handleCloseCartMini()}
+                      handleConfirm={() => dispatch(removeItem({ id: item.id, color: item.color, size: item.size }))}
+                    />
                   </Box>
                 </ListItem>
                 <Divider />
@@ -119,7 +132,7 @@ const CartMini: React.FC<ICartMini> = ({ handleToggle = () => {} }) => {
               variant='contained'
               onClick={() => {
                 navigate('/order')
-                handleToggle()
+                handleCloseCartMini()
               }}
             >
               {t('payment')}
@@ -128,7 +141,7 @@ const CartMini: React.FC<ICartMini> = ({ handleToggle = () => {} }) => {
               variant='contained'
               onClick={() => {
                 navigate('/cart')
-                handleToggle()
+                handleCloseCartMini()
               }}
             >
               {t('cart')}

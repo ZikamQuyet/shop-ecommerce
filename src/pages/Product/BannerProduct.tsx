@@ -13,7 +13,8 @@ interface IBannerProduct {
 const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
   const matches900 = useMediaQuery('(min-width:900px)')
   const [activeThumb, setActiveThumb] = useState<SwiperCore>()
-  const [isLoadingImg, setIsLoadingImg] = useState(false)
+  const [isLoadingImg1, setIsLoadingImg1] = useState(false)
+  const [isLoadingImg2, setIsLoadingImg2] = useState(false)
   return (
     <>
       <Swiper
@@ -28,12 +29,12 @@ const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
         {dataImages.map((item: IImage) => (
           <SwiperSlide key={item.id}>
             <Box sx={{ height: '37.5rem' }}>
-              {!isLoadingImg && <Skeleton height={'100%'} />}
+              {!isLoadingImg1 && <Skeleton sx={{ height: '100%', width: '100%', transform: 'unset' }} />}
               <img
                 src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}
                 alt='product-image'
                 style={{ height: '100%' }}
-                onLoad={() => setIsLoadingImg(true)}
+                onLoad={() => setIsLoadingImg1(true)}
               />
             </Box>
           </SwiperSlide>
@@ -50,12 +51,12 @@ const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
         {dataImages.map((item: IImage) => (
           <SwiperSlide key={item.id} style={{ display: 'flex', flexDirection: 'column' }}>
             <Box className='thumbs-wrapper' sx={{ height: '9.375rem' }}>
-              {!isLoadingImg && <Skeleton height={'100%'} />}
+              {!isLoadingImg2 && <Skeleton sx={{ height: '100%', width: '100%', transform: 'unset' }} />}
               <img
                 src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}
                 alt='product-image'
                 style={{ height: '100%' }}
-                onLoad={() => setIsLoadingImg(true)}
+                onLoad={() => setIsLoadingImg2(true)}
               />
             </Box>
           </SwiperSlide>
