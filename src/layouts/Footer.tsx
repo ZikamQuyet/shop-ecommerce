@@ -7,18 +7,30 @@ import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 
 import { Link, useNavigate } from 'react-router-dom'
-import { Box, Button, FormControl, Grid, List, ListItem, Stack, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  FormControl,
+  Grid,
+  List,
+  ListItem,
+  Stack,
+  TextField,
+  Typography,
+  useMediaQuery
+} from '@mui/material'
 import { images } from '../assets'
 import { useTranslation } from 'react-i18next'
 
 const Footer = () => {
+  const matches1200 = useMediaQuery('(min-width:1200px)')
   const { t } = useTranslation(['defaultLayout', 'auth'])
   return (
     <>
       <Box p='1rem' borderTop={'1px solid #000'}>
         <Grid container spacing={10}>
           <Grid item xs={12} sm={6} lg={3} display='flex' flexDirection='column' gap={2}>
-            <Box>
+            <Box width={matches1200 ? 'unset' : '60%'}>
               <Link to='/'>
                 <img src={images.logo} alt='logo' />
               </Link>
@@ -92,7 +104,7 @@ const Footer = () => {
             </Typography>
             <Typography> {t('note')}</Typography>
             <FormControl component={'form'} sx={{ flexDirection: 'row' }}>
-              <TextField id='register' label= {t("your email")}variant='outlined' />
+              <TextField id='register' label={t('your email')} variant='outlined' />
               <Button variant='contained' color='success' sx={{ fontSize: '14px' }} size='small'>
                 {t('auth:register.register')}
               </Button>

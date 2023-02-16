@@ -28,7 +28,7 @@ const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
       >
         {dataImages.map((item: IImage) => (
           <SwiperSlide key={item.id}>
-            <Box sx={{ height: '37.5rem' }}>
+            <Box height={matches900 ? '37.5rem' : 'unset'}>
               {!isLoadingImg1 && <Skeleton sx={{ height: '100%', width: '100%', transform: 'unset' }} />}
               <img
                 src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}
@@ -50,7 +50,7 @@ const BannerProduct: React.FC<IBannerProduct> = ({ dataImages }) => {
       >
         {dataImages.map((item: IImage) => (
           <SwiperSlide key={item.id} style={{ display: 'flex', flexDirection: 'column' }}>
-            <Box className='thumbs-wrapper' sx={{ height: '9.375rem' }}>
+            <Box className='thumbs-wrapper' height={matches900 ? '9.375rem' : 'unset'}>
               {!isLoadingImg2 && <Skeleton sx={{ height: '100%', width: '100%', transform: 'unset' }} />}
               <img
                 src={`http://duy.fresher.ameladev.click/storage/uploads/${item.product_img}`}

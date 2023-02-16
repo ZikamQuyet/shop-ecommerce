@@ -120,7 +120,7 @@ const Product: React.FC = () => {
                     <Controller
                       render={({ field }) => (
                         <FormControl sx={{ width: '80%' }}>
-                          <RadioGroup {...field} sx={{ flexDirection: 'row' }}>
+                          <RadioGroup {...field} sx={{ flexDirection: 'row', gap: '5px' }}>
                             {product.colors.map((color: IOption, index: number) => (
                               <FormControlLabel
                                 key={index}

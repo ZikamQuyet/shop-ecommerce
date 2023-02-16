@@ -113,6 +113,7 @@ const CartMini: React.FC<ICartMini> = ({ handleCloseCartMini = () => {} }) => {
                       open={openConfirm.isOpen}
                       handleClose={() => {
                         openConfirm.handleClose()
+                        handleCloseCartMini()
                       }}
                       handleCloseCartMini={() => handleCloseCartMini()}
                       handleConfirm={() => dispatch(removeItem({ id: item.id, color: item.color, size: item.size }))}

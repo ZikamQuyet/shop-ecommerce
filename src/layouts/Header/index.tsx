@@ -172,8 +172,8 @@ const Header: React.FC = () => {
                 </Stack>
               </form>
             </ModalCustom>
-            <Box onMouseEnter={openUser.handleOpen} onMouseLeave={openUser.handleClose} onClick={openUser.handleToggle}>
-              <Box sx={{ cursor: 'pointer' }}>
+            <Box onMouseEnter={openUser.handleOpen} onMouseLeave={openUser.handleClose}>
+              <Box sx={{ cursor: 'pointer' }} onClick={openUser.handleToggle}>
                 <PersonIcon />
               </Box>
               <Collapse
@@ -191,7 +191,7 @@ const Header: React.FC = () => {
                   borderRadius: 1
                 }}
               >
-                <List component='div' disablePadding>
+                <List component='div' disablePadding onClick={openUser.handleClose}>
                   {/* login/register */}
                   {auth.tokenLogin ? (
                     <>
@@ -266,7 +266,7 @@ const Header: React.FC = () => {
                   borderRadius: 1
                 }}
               >
-                <CartMini handleCloseCartMini={openCart.handleToggle} />
+                <CartMini handleCloseCartMini={openCart.handleClose} />
               </Collapse>
             </Box>
           </Grid>
