@@ -10,7 +10,12 @@ const Home: React.FC = () => {
   const { t } = useTranslation('defaultLayout')
   useEffect(() => {
     document.title = t('home')
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
   }, [])
+
   return (
     <>
       <Banner dataBanner={dataMainBanner} />

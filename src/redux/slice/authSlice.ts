@@ -23,6 +23,9 @@ const authSlice = createSlice({
       state.tokenLogin = action.payload.token
     },
     registerSuccess(state, action) {
+      if (!action.payload.token) {
+        throw new Error()
+      }
       state.tokenRegister = action.payload.token
     }
   }
@@ -41,6 +44,7 @@ export const register =
     try {
       const res = await registerAPI(data)
       dispatch(registerSuccess(res))
+      console.log('first', dispatch(registerSuccess(res)))
     } catch (error) {
       toast.error('Đăng ký thất bại')
     }

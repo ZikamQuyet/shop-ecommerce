@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { toast } from 'react-toastify'
 import { ICart } from '../../types/cart.type'
 
 const initialState: any = {
@@ -10,6 +11,7 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const itemInCart = state.cart.find((item: ICart) => item.id === action.payload.id)
+      toast.success('Thêm sản phẩm thành công')
       if (action.payload.size && action.payload.color) {
         if (itemInCart && itemInCart.color === action.payload.color && itemInCart.size === action.payload.size) {
           itemInCart.quantity = itemInCart.quantity + 1
